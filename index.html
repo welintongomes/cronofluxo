@@ -189,7 +189,7 @@
             flex-grow: 1;
             white-space: normal;
             word-wrap: break-word;
-            overflow: hidden;
+            /* overflow: hidden; */
             /* ou simplesmente remova o overflow */
         }
 
@@ -1083,88 +1083,249 @@
 
 
         /* ==================== SISTEMA DE LISTAS ANINHADAS ==================== */
+        .task-step {
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        /* Níveis de indentação visual */
+        .task-step[data-level="0"] {
+            padding-left: 0px;
+        }
+
+        .task-step[data-level="1"] {
+            padding-left: 25px;
+            border-left: 3px solid #667eea;
+        }
+
+        .task-step[data-level="2"] {
+            padding-left: 50px;
+            border-left: 3px solid #764ba2;
+        }
+
+        .task-step[data-level="3"] {
+            padding-left: 75px;
+            border-left: 3px solid #f093fb;
+        }
+
+        .task-step[data-level="4"] {
+            padding-left: 100px;
+            border-left: 3px solid #4facfe;
+        }
+
+        .task-step[data-level="5"] {
+            padding-left: 125px;
+            border-left: 3px solid #43e97b;
+        }
+
+        /* Para níveis superiores a 5 (dinâmico via JS) */
+        .task-step[data-level] {
+            margin-left: 0;
+        }
+
+        /* Marcadores visuais por nível */
+        .task-step[data-level="0"] .step-content::before {
+            content: '● ';
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .task-step[data-level="1"] .step-content::before {
+            content: '● ';
+            color: #764ba2;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .task-step[data-level="2"] .step-content::before {
+            content: '● ';
+            color: #f093fb;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .task-step[data-level="3"] .step-content::before {
+            content: '● ';
+            color: #4facfe;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .task-step[data-level="4"] .step-content::before {
+            content: '● ';
+            color: #43e97b;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .task-step[data-level="5"] .step-content::before {
+            content: '● ';
+            color: #fa709a;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* ==================== CONTAINER DOS STEPS COM AUTO-EXPANSÃO ==================== */
+
+.task-steps {
+    overflow-x: auto; /* Scroll horizontal quando necessário */
+    overflow-y: visible;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    
+    /* IMPORTANTE: Permitir que o conteúdo defina a largura */
+    width: 100%;
+    min-width: 100%;
+}
+
 .task-step {
+    clip-path: content-box;
     position: relative;
     transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    min-height: 35px;
+    white-space: nowrap;
+    width: max-content;
+    /* min-width: 193px; */
 }
 
-/* Níveis de indentação visual */
-.task-step[data-level="0"] {
-    padding-left: 0px;
+.step-content {
+    /* Permitir quebra de texto DENTRO do conteúdo */
+    white-space: normal;
+    word-break: break-word;
+    
+    /* IMPORTANTE: Definir largura máxima baseada no viewport */
+    max-width: 70vw; /* 70% da largura da tela */
+    
+    /* Para mobile, aumentar um pouco */
+    @media (max-width: 768px) {
+        max-width: 60vw;
+    }
 }
 
-.task-step[data-level="1"] {
-    padding-left: 25px;
-    border-left: 3px solid #667eea;
+/* Ajustar checkbox para não encolher */
+.task-step-checkbox {
+    flex-shrink: 0; /* Não encolher */
+    min-width: 20px;
+    min-height: 20px;
+    margin-right: 10px;
 }
 
-.task-step[data-level="2"] {
-    padding-left: 50px;
-    border-left: 3px solid #764ba2;
-}
-
-.task-step[data-level="3"] {
-    padding-left: 75px;
-    border-left: 3px solid #f093fb;
-}
-
-.task-step[data-level="4"] {
-    padding-left: 100px;
-    border-left: 3px solid #4facfe;
-}
-
-.task-step[data-level="5"] {
-    padding-left: 125px;
-    border-left: 3px solid #43e97b;
-}
-
-/* Para níveis superiores a 5 (dinâmico via JS) */
-.task-step[data-level] {
-    margin-left: 0;
-}
-
-/* Marcadores visuais por nível */
-.task-step[data-level="0"] .step-content::before {
-    content: '● ';
+/* Ícone de colapso também não encolhe */
+.collapse-icon {
+    flex-shrink: 0;
+    display: inline-block;
+    transition: transform 0.2s;
+    font-size: 12px;
     color: #667eea;
     font-weight: bold;
     margin-right: 5px;
 }
 
-.task-step[data-level="1"] .step-content::before {
-    content: '○ ';
-    color: #764ba2;
-    font-weight: bold;
-    margin-right: 5px;
+.task-steps-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    position: relative;
+    
+    /* Scroll mais bonito */
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f1f1f1;
 }
 
-.task-step[data-level="2"] .step-content::before {
-    content: '■ ';
-    color: #f093fb;
-    font-weight: bold;
-    margin-right: 5px;
+.task-steps-wrapper::-webkit-scrollbar {
+    height: 8px;
 }
 
-.task-step[data-level="3"] .step-content::before {
-    content: '▪ ';
-    color: #4facfe;
-    font-weight: bold;
-    margin-right: 5px;
+.task-steps-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
 }
 
-.task-step[data-level="4"] .step-content::before {
-    content: '▸ ';
-    color: #43e97b;
-    font-weight: bold;
-    margin-right: 5px;
+.task-steps-wrapper::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 4px;
 }
 
-.task-step[data-level="5"] .step-content::before {
-    content: '» ';
-    color: #fa709a;
-    font-weight: bold;
-    margin-right: 5px;
+.task-steps-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #5568d3;
 }
+
+/* ==================== MELHORAR ÁREAS CLICÁVEIS ==================== */
+
+.collapse-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    transition: all 0.2s;
+    font-size: 12px;
+    color: #667eea;
+    font-weight: bold;
+    margin-right: 8px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 4px;
+    
+    /* Área clicável maior */
+    padding: 4px;
+}
+
+.collapse-icon:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #5568d3;
+    transform: scale(1.1);
+}
+
+.collapse-icon:active {
+    transform: scale(0.95);
+    background: rgba(102, 126, 234, 0.2);
+}
+
+/* Checkbox com área clicável definida */
+.task-step-checkbox {
+    flex-shrink: 0;
+    min-width: 20px;
+    min-height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    
+    /* Área clicável maior */
+    padding: 2px;
+}
+
+/* Área clicável do step (exclui ícone e checkbox) */
+.task-step {
+    cursor: pointer;
+}
+
+.task-step:hover {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+/* Quando hover no ícone, não destacar o step inteiro */
+.collapse-icon:hover ~ .step-content,
+.task-step-checkbox:hover ~ .step-content {
+    background: transparent;
+}
+
+/* Melhorar feedback visual */
+.step-content {
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.task-step:hover .step-content {
+    background: rgba(102, 126, 234, 0.03);
+}
+
         @media (max-width: 768px) {
             body {
                 padding: 15px;
@@ -1266,10 +1427,10 @@
             }
 
             .task-content {
-                background-color: lavender;
-                border-radius: 5px 6px 9px 39px;
-                padding: 0px 0px 0px 13px;
-            }
+    background-color: lavender;
+    border-radius: 5px 6px 9px 39px;
+    padding: 0px 0px 0px 16px;
+}
 
             .task-name {
                 margin-right: 10px;
@@ -1453,7 +1614,7 @@
             <textarea id="taskSteps"
                 placeholder="1 xícara de farinha de trigo&#10;1 colher de sopa de açúcar&#10;1 colher de sopa de fermento em pó&#10;Etc."></textarea>
             <small style="color: #666; font-size: 12px;">💡 Use TAB ou espaços para criar níveis aninhados</small>
-            </div>
+        </div>
 
         <div class="form-group">
             <label for="taskImage">Imagens do Cronograma (opcional):</label>
@@ -2234,114 +2395,114 @@
                 });
             }
             // ==================== FUNÇÕES DE LISTAS ANINHADAS ====================
-function detectIndentationLevel(line) {
-    const match = line.match(/^(\s*)/);
-    if (!match) return { level: 0, text: line, originalIndent: '' };
+            function detectIndentationLevel(line) {
+                const match = line.match(/^(\s*)/);
+                if (!match) return { level: 0, text: line, originalIndent: '' };
 
-    const indent = match[1];
-    const tabs = (indent.match(/\t/g) || []).length;
-    const spaces = indent.replace(/\t/g, '').length;
-    
-    // 2 espaços = 1 nível (ajuste para 4 se preferir)
-    const spacesLevel = Math.floor(spaces / 2);
-    const level = tabs + spacesLevel;
-    const text = line.trim();
+                const indent = match[1];
+                const tabs = (indent.match(/\t/g) || []).length;
+                const spaces = indent.replace(/\t/g, '').length;
 
-    return { level, text, originalIndent: indent };
-}
+                // 2 espaços = 1 nível (ajuste para 4 se preferir)
+                const spacesLevel = Math.floor(spaces / 2);
+                const level = tabs + spacesLevel;
+                const text = line.trim();
 
-function parseStepsWithLevels(stepsText) {
-    const lines = stepsText.split('\n');
-    const parsedSteps = [];
+                return { level, text, originalIndent: indent };
+            }
 
-    lines.forEach(line => {
-        if (line.trim().length === 0) return;
-        
-        const { level, text, originalIndent } = detectIndentationLevel(line);
-        parsedSteps.push({
-            text,
-            level,
-            originalIndent,
-            completed: false
-        });
-    });
+            function parseStepsWithLevels(stepsText) {
+                const lines = stepsText.split('\n');
+                const parsedSteps = [];
 
-    return parsedSteps;
-}
+                lines.forEach(line => {
+                    if (line.trim().length === 0) return;
 
-function reconstructStepsText(steps) {
-    return steps.map(step => {
-        const indent = step.originalIndent || '  '.repeat(step.level);
-        return indent + step.text;
-    }).join('\n');
-}
+                    const { level, text, originalIndent } = detectIndentationLevel(line);
+                    parsedSteps.push({
+                        text,
+                        level,
+                        originalIndent,
+                        completed: false
+                    });
+                });
+
+                return parsedSteps;
+            }
+
+            function reconstructStepsText(steps) {
+                return steps.map(step => {
+                    const indent = step.originalIndent || '  '.repeat(step.level);
+                    return indent + step.text;
+                }).join('\n');
+            }
 
             // ==================== FUNÇÕES DE CRUD ====================
- function createTask() {
-    const taskNameInput = document.getElementById('taskName');
-    const taskStepsInput = document.getElementById('taskSteps');
-    const taskImageInput = document.getElementById('taskImage');
+            function createTask() {
+                const taskNameInput = document.getElementById('taskName');
+                const taskStepsInput = document.getElementById('taskSteps');
+                const taskImageInput = document.getElementById('taskImage');
 
-    const name = taskNameInput.value.trim();
-    if (!name) {
-        showStatusMessage('Por favor, insira um nome para o cronograma', 'error');
-        return;
-    }
+                const name = taskNameInput.value.trim();
+                if (!name) {
+                    showStatusMessage('Por favor, insira um nome para o cronograma', 'error');
+                    return;
+                }
 
-    const stepsText = taskStepsInput.value.trim();
-    if (!stepsText) {
-        showStatusMessage('Por favor, insira pelo menos um passo', 'error');
-        return;
-    }
+                const stepsText = taskStepsInput.value.trim();
+                if (!stepsText) {
+                    showStatusMessage('Por favor, insira pelo menos um passo', 'error');
+                    return;
+                }
 
-    // MUDANÇA AQUI: usar parseStepsWithLevels
-    const steps = parseStepsWithLevels(stepsText);
+                // MUDANÇA AQUI: usar parseStepsWithLevels
+                const steps = parseStepsWithLevels(stepsText);
 
-    let imagesData = [];
+                let imagesData = [];
 
-    if (capturedImagesData.length > 0) {
-        imagesData = [...capturedImagesData];
-    }
+                if (capturedImagesData.length > 0) {
+                    imagesData = [...capturedImagesData];
+                }
 
-    if (taskImageInput.files && taskImageInput.files.length > 0) {
-        const filePromises = Array.from(taskImageInput.files).map(file => {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    resolve(e.target.result);
+                if (taskImageInput.files && taskImageInput.files.length > 0) {
+                    const filePromises = Array.from(taskImageInput.files).map(file => {
+                        return new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                resolve(e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    });
+
+                    Promise.all(filePromises).then(galleryImages => {
+                        imagesData = [...imagesData, ...galleryImages];
+
+                        const task = {
+                            name,
+                            steps,
+                            images: imagesData,
+                            createdAt: new Date().toISOString(),
+                            completed: false
+                        };
+
+                        saveTask(task);
+                        clearCreateForm();
+                    });
+                    return;
+                }
+
+                const task = {
+                    name,
+                    steps,
+                    images: imagesData,
+                    createdAt: new Date().toISOString(),
+                    completed: false
                 };
-                reader.readAsDataURL(file);
-            });
-        });
 
-        Promise.all(filePromises).then(galleryImages => {
-            imagesData = [...imagesData, ...galleryImages];
-
-            const task = {
-                name,
-                steps,
-                images: imagesData,
-                createdAt: new Date().toISOString(),
-                completed: false
-            };
-
-            saveTask(task);
-            clearCreateForm();
-        });
-        return;
-    }
-
-    const task = {
-        name,
-        steps,
-        images: imagesData,
-        createdAt: new Date().toISOString(),
-        completed: false
-    };
-
-    saveTask(task);
-    clearCreateForm();
-}
+                saveTask(task);
+                clearCreateForm();
+            }
 
             function clearCreateForm() {
                 const taskNameInput = document.getElementById('taskName');
@@ -2698,21 +2859,21 @@ function reconstructStepsText(steps) {
 
                     if (task) {
                         const updatedSteps = steps.map((newStep, index) => {
-    if (task.steps[index]) {
-        return {
-            text: newStep.text,
-            level: newStep.level,
-            originalIndent: newStep.originalIndent,
-            completed: task.steps[index].completed
-        };
-    }
-    return { 
-        text: newStep.text, 
-        level: newStep.level,
-        originalIndent: newStep.originalIndent,
-        completed: false 
-    };
-});
+                            if (task.steps[index]) {
+                                return {
+                                    text: newStep.text,
+                                    level: newStep.level,
+                                    originalIndent: newStep.originalIndent,
+                                    completed: task.steps[index].completed
+                                };
+                            }
+                            return {
+                                text: newStep.text,
+                                level: newStep.level,
+                                originalIndent: newStep.originalIndent,
+                                completed: false
+                            };
+                        });
 
                         task.name = name;
                         task.steps = updatedSteps;
@@ -3049,7 +3210,144 @@ function reconstructStepsText(steps) {
                         return { ...item, highlighted: highlightedText };
                     });
             }
+            // ==================== SISTEMA DE COLAPSO DE NÍVEIS ====================
 
+            // Adicione esta função ANTES do renderTasks()
+            function renderStepsWithCollapse(steps, taskId) {
+                let html = '';
+                let currentParentLevel = -1;
+                let collapsedLevels = new Set();
+
+                steps.forEach((step, index) => {
+                    const level = step.level || 0;
+                    const hasChildren = index < steps.length - 1 && steps[index + 1].level > level;
+                    const isHidden = Array.from(collapsedLevels).some(collapsedLevel => level > collapsedLevel);
+
+                    // Calcular padding para níveis > 5
+                    const paddingLeft = level > 5 ? 100 + (level - 5) * 20 : 0;
+                    const extraStyle = level > 5 ? `padding-left: ${paddingLeft}px; border-left: 3px solid #ccc;` : '';
+                    const hideStyle = isHidden ? 'display: none;' : '';
+
+                    // Ícone de colapso/expansão
+                    const collapseIcon = hasChildren 
+    ? `<span class="collapse-icon" onclick="toggleStepChildren(${taskId}, ${index}, event)" style="cursor: pointer; margin-right: 5px; user-select: none;">▼</span>` 
+    : '<span style="margin-right: 5px; opacity: 0; width: 16px; display: inline-block;">▼</span>';
+
+                    html += `
+            <div class="task-step ${step.completed ? 'completed' : ''}" 
+                 data-level="${level}"
+                 data-step-index="${index}"
+                 data-has-children="${hasChildren}"
+                 style="${extraStyle}${hideStyle}">
+                ${collapseIcon}
+                <input type="checkbox" 
+                       class="task-step-checkbox" 
+                       data-taskid="${taskId}" 
+                       data-stepindex="${index}" 
+                       ${step.completed ? 'checked' : ''}>
+                <div class="step-content">${step.text}</div>
+            </div>
+        `;
+                });
+
+                return html;
+            }
+
+            // Função para colapsar/expandir filhos
+// SUBSTITUA a função completa:
+function toggleStepChildren(taskId, stepIndex, event) {
+    // IMPORTANTE: Prevenir propagação do clique
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    
+    const taskElement = document.querySelector(`[data-taskid="${taskId}"]`).closest('.task-item');
+    if (!taskElement) return;
+    
+    const steps = taskElement.querySelectorAll('.task-step');
+    const clickedStep = steps[stepIndex];
+    const clickedLevel = parseInt(clickedStep.getAttribute('data-level'));
+    const icon = clickedStep.querySelector('.collapse-icon');
+    
+    // Verificar se está colapsado
+    const isCollapsed = icon.textContent === '▶';
+    
+    // Atualizar ícone
+    icon.textContent = isCollapsed ? '▼' : '▶';
+    
+    // Mostrar/ocultar filhos
+    for (let i = stepIndex + 1; i < steps.length; i++) {
+        const currentLevel = parseInt(steps[i].getAttribute('data-level'));
+        
+        // Parar quando encontrar item do mesmo nível ou superior
+        if (currentLevel <= clickedLevel) break;
+        
+        // Mostrar/ocultar apenas filhos diretos e seus descendentes
+        if (currentLevel > clickedLevel) {
+            if (isCollapsed) {
+                steps[i].style.display = 'flex';
+                // Restaurar ícones dos filhos diretos
+                if (currentLevel === clickedLevel + 1) {
+                    const childIcon = steps[i].querySelector('.collapse-icon');
+                    if (childIcon && steps[i].getAttribute('data-has-children') === 'true') {
+                        childIcon.textContent = '▼';
+                    }
+                }
+            } else {
+                steps[i].style.display = 'none';
+            }
+        }
+    }
+}
+            // Adicione CSS para o ícone
+            const collapseStyle = document.createElement('style');
+            collapseStyle.textContent = `
+    .collapse-icon {
+    padding-bottom: 31px;
+    padding-right: 18px;
+    padding-left: 40px;
+    display: inline-block;
+    transition: transform 0.2s;
+    font-size: 20px;
+    color: #667eea;
+    font-weight: bold;
+}
+    
+    .collapse-icon:hover {
+        color: #5568d3;
+        transform: scale(1.2);
+    }
+    
+    /* Indicador visual de nível profundo */
+    .task-step[data-level] {
+        position: relative;
+    }
+    
+    .task-step[data-level]::after {
+    content: attr(data-level);
+    position: absolute;
+    right: 9px;
+    top: 5px;
+    background: #667eea;
+    color: white;
+    font-size: 10px;
+    padding: 0px 11px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+    
+    .task-step[data-level]:hover::after {
+        opacity: 0.7;
+    }
+    
+    /* Ocultar indicador de nível 0 */
+    .task-step[data-level="0"]::after {
+        display: none;
+    }
+`;
+            document.head.appendChild(collapseStyle);
             function renderTasks(tasks, searchValue = '') {
                 const taskList = document.getElementById('taskList');
                 taskList.innerHTML = '';
@@ -3090,21 +3388,10 @@ function reconstructStepsText(steps) {
                     <small>Progresso: ${completedSteps}/${totalSteps} (${Math.round(progressPercentage)}%)</small>
                 </div>
 
-                <div class="task-steps ${isExpanded ? '' : 'collapsed'}">
-    ${task.steps.map((step, index) => {
-        // Calcular padding para níveis > 5
-        const paddingLeft = step.level > 5 ? 125 + (step.level - 5) * 25 : 0;
-        const extraStyle = step.level > 5 ? `style="padding-left: ${paddingLeft}px; border-left: 3px solid #ccc;"` : '';
-        
-        return `
-            <div class="task-step ${step.completed ? 'completed' : ''}" 
-                 data-level="${step.level || 0}"
-                 ${extraStyle}>
-                <input type="checkbox" class="task-step-checkbox" data-taskid="${task.id}" data-stepindex="${index}" ${step.completed ? 'checked' : ''}>
-                <div class="step-content">${step.text}</div>
-            </div>
-        `;
-    }).join('')}
+<div class="task-steps-wrapper">
+    <div class="task-steps ${isExpanded ? '' : 'collapsed'}">
+        ${renderStepsWithCollapse(task.steps, task.id)}
+    </div>
 </div>
                 <div class="task-local-search">
                     <button class="step-voice-search-btn searchvoice" title="Pesquisar por voz">🎙️</button>
@@ -3293,22 +3580,28 @@ function reconstructStepsText(steps) {
                 };
             }
 
-            function handleTaskStepClick(event) {
-                if (event.target.type === 'checkbox') {
-                    return;
-                }
+function handleTaskStepClick(event) {
+    // Ignorar cliques no ícone de colapso
+    if (event.target.classList.contains('collapse-icon')) {
+        return;
+    }
+    
+    // Ignorar cliques no checkbox
+    if (event.target.type === 'checkbox') {
+        return;
+    }
 
-                event.stopPropagation();
-                event.preventDefault();
+    event.stopPropagation();
+    event.preventDefault();
 
-                const checkbox = event.currentTarget.querySelector('.task-step-checkbox');
+    const checkbox = event.currentTarget.querySelector('.task-step-checkbox');
 
-                if (checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                    const changeEvent = new Event('change', { bubbles: false });
-                    checkbox.dispatchEvent(changeEvent);
-                }
-            }
+    if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        const changeEvent = new Event('change', { bubbles: false });
+        checkbox.dispatchEvent(changeEvent);
+    }
+}
 
             function updateTaskProgressLocally(taskId, stepIndex, completed) {
                 const taskElement = document.querySelector(`[data-taskid="${taskId}"].edit-task-btn`).closest('.task-item');
@@ -4468,34 +4761,34 @@ function reconstructStepsText(steps) {
                 console.log('Pausa após título:', PAUSE_AFTER_TITLE + 'ms');
                 console.log('Pausa entre steps:', PAUSE_BETWEEN_STEPS + 'ms');
                 const taskStepsInput = document.getElementById('taskSteps');
-const editTaskStepsInput = document.getElementById('editTaskSteps');
+                const editTaskStepsInput = document.getElementById('editTaskSteps');
 
-if (taskStepsInput) {
-    taskStepsInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-            e.preventDefault();
-            const start = this.selectionStart;
-            const end = this.selectionEnd;
-            
-            // Inserir 2 espaços
-            this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
-            this.selectionStart = this.selectionEnd = start + 2;
-        }
-    });
-}
+                if (taskStepsInput) {
+                    taskStepsInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const start = this.selectionStart;
+                            const end = this.selectionEnd;
 
-if (editTaskStepsInput) {
-    editTaskStepsInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-            e.preventDefault();
-            const start = this.selectionStart;
-            const end = this.selectionEnd;
-            
-            this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
-            this.selectionStart = this.selectionEnd = start + 2;
-        }
-    });
-}
+                            // Inserir 2 espaços
+                            this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+                            this.selectionStart = this.selectionEnd = start + 2;
+                        }
+                    });
+                }
+
+                if (editTaskStepsInput) {
+                    editTaskStepsInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const start = this.selectionStart;
+                            const end = this.selectionEnd;
+
+                            this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+                            this.selectionStart = this.selectionEnd = start + 2;
+                        }
+                    });
+                }
             });
 
             // ==================== LIMPEZA AO SAIR ====================
