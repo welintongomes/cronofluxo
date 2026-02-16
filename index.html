@@ -570,13 +570,13 @@
 
 
         .show-more-btn {
-            margin-left: 12px;
-            width: 96%;
-            padding: 5px 14px;
+            margin-left: 20px;
+            width: 90%;
+            padding: 9px 13px;
             background-color: #4a90e2;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 11px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
@@ -1480,14 +1480,14 @@
 
         /* ==================== INDICADOR DE TAREFA ATIVA ==================== */
 
-        .task-item.expanded::before {
+        /* .task-item.expanded::before {
             content: '📍';
             position: absolute;
             left: -15px;
             top: 20px;
             font-size: 20px;
             animation: pulse 2s infinite;
-        }
+        } */
 
         @keyframes pulse {
 
@@ -1504,7 +1504,7 @@
         }
 
         /* Badge "ATIVA" */
-        .task-item.expanded .task-name::after {
+        /* .task-item.expanded .task-name::after {
             content: 'ATIVA';
             display: inline-block;
             margin-left: 10px;
@@ -1515,7 +1515,7 @@
             font-weight: bold;
             border-radius: 10px;
             vertical-align: middle;
-        }
+        } */
 
         @media (max-width: 768px) {
             body {
