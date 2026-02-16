@@ -84,10 +84,10 @@
         }
 
 
-        textarea {
-            height: 62px;
-            resize: vertical;
-        }
+textarea {
+    height: 273px;
+    resize: vertical;
+}
 
         button {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -1340,6 +1340,27 @@
             animation: slideIn 0.3s ease;
         }
 
+        .marker-btn {
+            padding: 5px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+
+        .marker-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .marker-btn:active {
+            transform: translateY(0);
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -1393,6 +1414,10 @@
 
         .expand-all-controls {
             transition: opacity 0.3s ease;
+        }
+
+        #taskSteps {
+            min-height: 310;
         }
 
         @media (max-width: 768px) {
@@ -1463,7 +1488,7 @@
 
             #searchInput {
                 margin-top: 5px;
-                width: 100%;
+                width: 88%;
                 padding: 7px 10px 10px 50px;
                 border-radius: 20px;
                 border: 1px solid #ccc;
@@ -1473,7 +1498,7 @@
             #clearSearchBtn {
                 padding: 9px 18px 9px 21px;
                 position: absolute;
-                left: 0px;
+                left: 20px;
                 top: 53%;
                 transform: translateY(-50%);
                 background: none;
@@ -1678,10 +1703,41 @@
 
         <div class="form-group">
             <label for="taskSteps">Passos a serem executados (um por linha):</label>
+            <div class="marker-buttons" style="margin-bottom: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+                <button type="button" onclick="insertMarkerHelper('taskSteps', '/')" class="marker-btn"
+                    title="Adicionar nível com /">
+                    + /
+                </button>
+                <button type="button" onclick="insertMarkerHelper('taskSteps', '>')" class="marker-btn"
+                    title="Adicionar nível com >">
+                    + >
+                </button>
+                <button type="button" onclick="insertMarkerHelper('taskSteps', '-')" class="marker-btn"
+                    title="Adicionar nível com -">
+                    + -
+                </button>
+                <button type="button" onclick="insertMarkerHelper('taskSteps', '*')" class="marker-btn"
+                    title="Adicionar nível com *">
+                    + *
+                </button>
+                <button type="button" onclick="insertMarkerHelper('taskSteps', '#')" class="marker-btn"
+                    title="Adicionar nível com #">
+                    + #
+                </button>
+            </div>
             <textarea id="taskSteps"
-                placeholder="1 xícara de farinha de trigo&#10;1 colher de sopa de açúcar&#10;1 colher de sopa de fermento em pó&#10;Etc."></textarea>
-            <small style="color: #666; font-size: 12px;">💡 Use TAB ou espaços para criar níveis aninhados</small>
+                placeholder="Métodos de indentação:&#10;&#10;Espaços/Tab:&#10;Tarefa principal&#10;  Subtarefa&#10;    Sub-subtarefa&#10;&#10;Marcadores (/, >, -, *, etc):&#10;Tarefa principal&#10;/ Subtarefa nível 1&#10;// Subtarefa nível 2&#10;/// Subtarefa nível 3&#10;&#10;> Ou use >&#10;>> Nível 2&#10;>>> Nível 3"></textarea>
+            <div class="indent-help"
+                style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 12px;">
+                <strong>💡 Métodos de indentação: / > * # - ></strong>
+                
+                <div style="margin-top: 8px; color: #666;">
+                    <strong>Exemplo:</strong> <code
+                        style="background: white; padding: 2px 6px; border-radius: 3px;">/// Texto muito longo aqui não atrapalha</code>
+                </div>
+            </div>
         </div>
+
 
         <div class="form-group">
             <label for="taskImage">Imagens do Cronograma (opcional):</label>
@@ -2462,22 +2518,69 @@
                 });
             }
             // ==================== FUNÇÕES DE LISTAS ANINHADAS ====================
+
+            // ==================== SISTEMA HÍBRIDO DE INDENTAÇÃO ====================
             function detectIndentationLevel(line) {
-                const match = line.match(/^(\s*)/);
-                if (!match) return { level: 0, text: line, originalIndent: '' };
+                const trimmedLine = line.trim();
 
-                const indent = match[1];
-                const tabs = (indent.match(/\t/g) || []).length;
-                const spaces = indent.replace(/\t/g, '').length;
+                // Sistema 1: Marcadores (/, >, -, *, •, etc.)
+                const markerPatterns = [
+                    { regex: /^(\/+)\s*(.+)$/, marker: '/' },      // / // /// ////
+                    { regex: /^(>+)\s*(.+)$/, marker: '>' },       // > >> >>> >>>>
+                    { regex: /^(-+)\s*(.+)$/, marker: '-' },       // - -- --- ----
+                    { regex: /^(\*+)\s*(.+)$/, marker: '*' },      // * ** *** ****
+                    { regex: /^(•+)\s*(.+)$/, marker: '•' },       // • •• ••• ••••
+                    { regex: /^(\.+)\s*(.+)$/, marker: '.' },      // . .. ... ....
+                    { regex: /^(#+)\s*(.+)$/, marker: '#' },       // # ## ### ####
+                    { regex: /^(→+)\s*(.+)$/, marker: '→' },       // → →→ →→→
+                ];
 
-                // 2 espaços = 1 nível (ajuste para 4 se preferir)
-                const spacesLevel = Math.floor(spaces / 2);
-                const level = tabs + spacesLevel;
-                const text = line.trim();
+                // Testar cada padrão de marcador
+                for (const pattern of markerPatterns) {
+                    const match = trimmedLine.match(pattern.regex);
+                    if (match) {
+                        const level = match[1].length; // Quantidade de marcadores
+                        const text = match[2].trim();
+                        return {
+                            level,
+                            text,
+                            originalIndent: match[1] + ' ', // Salvar marcador original
+                            type: 'marker',
+                            marker: pattern.marker
+                        };
+                    }
+                }
 
-                return { level, text, originalIndent: indent };
+                // Sistema 2: Espaços/Tabs (fallback)
+                const spaceMatch = line.match(/^(\s*)/);
+                if (spaceMatch) {
+                    const indent = spaceMatch[1];
+                    const tabs = (indent.match(/\t/g) || []).length;
+                    const spaces = indent.replace(/\t/g, '').length;
+
+                    // 2 espaços = 1 nível
+                    const spacesLevel = Math.floor(spaces / 2);
+                    const level = tabs + spacesLevel;
+                    const text = line.trim();
+
+                    return {
+                        level,
+                        text,
+                        originalIndent: indent,
+                        type: 'spaces'
+                    };
+                }
+
+                // Fallback: sem indentação
+                return {
+                    level: 0,
+                    text: line.trim(),
+                    originalIndent: '',
+                    type: 'none'
+                };
             }
 
+            // SUBSTITUA a função completa:
             function parseStepsWithLevels(stepsText) {
                 const lines = stepsText.split('\n');
                 const parsedSteps = [];
@@ -2485,11 +2588,13 @@
                 lines.forEach(line => {
                     if (line.trim().length === 0) return;
 
-                    const { level, text, originalIndent } = detectIndentationLevel(line);
+                    const { level, text, originalIndent, type, marker } = detectIndentationLevel(line);
                     parsedSteps.push({
                         text,
                         level,
                         originalIndent,
+                        type,
+                        marker,
                         completed: false
                     });
                 });
@@ -2497,8 +2602,15 @@
                 return parsedSteps;
             }
 
+            // SUBSTITUA a função completa:
             function reconstructStepsText(steps) {
                 return steps.map(step => {
+                    // Se tiver marcador, usar o marcador
+                    if (step.marker && step.type === 'marker') {
+                        return step.marker.repeat(step.level) + ' ' + step.text;
+                    }
+
+                    // Senão, usar espaços
                     const indent = step.originalIndent || '  '.repeat(step.level);
                     return indent + step.text;
                 }).join('\n');
@@ -5030,8 +5142,31 @@
                             this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
                             this.selectionStart = this.selectionEnd = start + 2;
                         }
+                        // Ctrl + / : inserir barra
+                        if (e.ctrlKey && e.key === '/') {
+                            e.preventDefault();
+                            insertMarkerAtCursor(this, '/');
+                            return;
+                        }
+
+                        // Ctrl + > : inserir seta
+                        if (e.ctrlKey && e.key === '.') {
+                            e.preventDefault();
+                            insertMarkerAtCursor(this, '>');
+                            return;
+                        }
+
+                        // Ctrl + - : inserir traço
+                        if (e.ctrlKey && e.key === '-') {
+                            e.preventDefault();
+                            insertMarkerAtCursor(this, '-');
+                            return;
+                        }
                     });
                 }
+
+
+
 
                 if (editTaskStepsInput) {
                     editTaskStepsInput.addEventListener('keydown', function (e) {
@@ -5045,7 +5180,67 @@
                         }
                     });
                 }
+                if (e.ctrlKey && e.key === '/') {
+                    e.preventDefault();
+                    insertMarkerAtCursor(this, '/');
+                    return;
+                }
+
+                if (e.ctrlKey && e.key === '.') {
+                    e.preventDefault();
+                    insertMarkerAtCursor(this, '>');
+                    return;
+                }
+
+                if (e.ctrlKey && e.key === '-') {
+                    e.preventDefault();
+                    insertMarkerAtCursor(this, '-');
+                    return;
+                }
             });
+            function insertMarkerHelper(textareaId, marker) {
+                const textarea = document.getElementById(textareaId);
+                if (!textarea) return;
+
+                const start = textarea.selectionStart;
+                const lineStart = textarea.value.lastIndexOf('\n', start - 1) + 1;
+
+                // Contar marcadores existentes
+                const currentLine = textarea.value.substring(lineStart, start);
+                const markerMatch = currentLine.match(new RegExp(`^(\\${marker}+)\\s*`));
+                const currentLevel = markerMatch ? markerMatch[1].length : 0;
+
+                // Adicionar mais um marcador
+                const newMarker = marker.repeat(currentLevel + 1) + ' ';
+
+                textarea.value = textarea.value.substring(0, lineStart) +
+                    newMarker +
+                    textarea.value.substring(lineStart);
+
+                textarea.selectionStart = textarea.selectionEnd = lineStart + newMarker.length;
+                textarea.focus();
+            }
+            // Função auxiliar para inserir marcador
+            function insertMarkerAtCursor(textarea, marker) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const lineStart = textarea.value.lastIndexOf('\n', start - 1) + 1;
+
+                // Contar quantos marcadores já existem na linha
+                const currentLine = textarea.value.substring(lineStart, start);
+                const markerMatch = currentLine.match(new RegExp(`^(\\${marker}+)\\s*`));
+                const currentLevel = markerMatch ? markerMatch[1].length : 0;
+
+                // Adicionar mais um marcador
+                const newMarker = marker.repeat(currentLevel + 1) + ' ';
+
+                // Inserir no início da linha
+                textarea.value = textarea.value.substring(0, lineStart) +
+                    newMarker +
+                    textarea.value.substring(lineStart);
+
+                textarea.selectionStart = textarea.selectionEnd = lineStart + newMarker.length;
+            }
 
             // ==================== LIMPEZA AO SAIR ====================
             window.addEventListener('beforeunload', () => {
