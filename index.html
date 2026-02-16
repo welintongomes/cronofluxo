@@ -84,10 +84,10 @@
         }
 
 
-textarea {
-    height: 273px;
-    resize: vertical;
-}
+        textarea {
+            height: 273px;
+            resize: vertical;
+        }
 
         button {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -486,8 +486,8 @@ textarea {
 
         .create-btn-row {
             display: flex;
-            gap: 10px;
-            /* margin-top: 10px; */
+            /* gap: 10px; */
+            margin-top: 10px;
             align-items: center;
             justify-content: space-around;
         }
@@ -1730,7 +1730,7 @@ textarea {
             <div class="indent-help"
                 style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 12px;">
                 <strong>💡 Métodos de indentação: / > * # - ></strong>
-                
+
                 <div style="margin-top: 8px; color: #666;">
                     <strong>Exemplo:</strong> <code
                         style="background: white; padding: 2px 6px; border-radius: 3px;">/// Texto muito longo aqui não atrapalha</code>
@@ -1852,6 +1852,28 @@ textarea {
 
                 <div class="form-group">
                     <label for="editTaskSteps">Passos a serem executados (um por linha):</label>
+                    <div class="marker-buttons" style="margin-bottom: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+                        <button type="button" onclick="insertMarkerHelper('editTaskSteps', '/')" class="marker-btn"
+                            title="Adicionar nível com /">
+                            + /
+                        </button>
+                        <button type="button" onclick="insertMarkerHelper('editTaskSteps', '>')" class="marker-btn"
+                            title="Adicionar nível com >">
+                            + >
+                        </button>
+                        <button type="button" onclick="insertMarkerHelper('editTaskSteps', '-')" class="marker-btn"
+                            title="Adicionar nível com -">
+                            + -
+                        </button>
+                        <button type="button" onclick="insertMarkerHelper('editTaskSteps', '*')" class="marker-btn"
+                            title="Adicionar nível com *">
+                            + *
+                        </button>
+                        <button type="button" onclick="insertMarkerHelper('editTaskSteps', '#')" class="marker-btn"
+                            title="Adicionar nível com #">
+                            + #
+                        </button>
+                    </div>
                     <textarea id="editTaskSteps"></textarea>
                     <div id="resizeHandle"></div>
                 </div>
@@ -5100,48 +5122,50 @@ textarea {
                 // Adicionar CSS para preview do modal
                 const style = document.createElement('style');
                 style.textContent = `
-    #editModalPreview .task-step {
-        padding: 10px;
-        margin: 5px 0;
-        border-left: 3px solid transparent;
-        transition: all 0.3s ease;
-        cursor: pointer; /* 🔥 Mostrar que é clicável */
-    }
-    
-    #editModalPreview .task-step:hover {
-        background-color: #f0f0f0; /* 🔥 Efeito hover */
-    }
-    
-    #editModalPreview .task-step.step-focus {
-        background-color: #fff3cd;
-        border-left-color: #ffc107;
-    }
-    
-    #editModalPreview .step-content mark {
-        background-color: #ffeb3b;
-        padding: 2px 4px;
-        border-radius: 3px;
-    }
-`;
+                    #editModalPreview .task-step {
+                        padding: 10px;
+                        margin: 5px 0;
+                        border-left: 3px solid transparent;
+                        transition: all 0.3s ease;
+                        cursor: pointer; /* 🔥 Mostrar que é clicável */
+                    }
+                    
+                    #editModalPreview .task-step:hover {
+                        background-color: #f0f0f0; /* 🔥 Efeito hover */
+                    }
+                    
+                    #editModalPreview .task-step.step-focus {
+                        background-color: #fff3cd;
+                        border-left-color: #ffc107;
+                    }
+                    
+                    #editModalPreview .step-content mark {
+                        background-color: #ffeb3b;
+                        padding: 2px 4px;
+                        border-radius: 3px;
+                    }
+                `;
                 document.head.appendChild(style);
 
                 console.log('Dispositivo detectado:', isMobileDevice() ? 'Mobile' : 'Desktop');
                 console.log('Pausa após título:', PAUSE_AFTER_TITLE + 'ms');
                 console.log('Pausa entre steps:', PAUSE_BETWEEN_STEPS + 'ms');
+                // ===== ATALHOS DE TECLADO PARA MARCADORES =====
                 const taskStepsInput = document.getElementById('taskSteps');
                 const editTaskStepsInput = document.getElementById('editTaskSteps');
 
                 if (taskStepsInput) {
                     taskStepsInput.addEventListener('keydown', function (e) {
+                        // Tab: inserir 2 espaços
                         if (e.key === 'Tab') {
                             e.preventDefault();
                             const start = this.selectionStart;
                             const end = this.selectionEnd;
-
-                            // Inserir 2 espaços
                             this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
                             this.selectionStart = this.selectionEnd = start + 2;
+                            return;
                         }
+
                         // Ctrl + / : inserir barra
                         if (e.ctrlKey && e.key === '/') {
                             e.preventDefault();
@@ -5165,81 +5189,122 @@ textarea {
                     });
                 }
 
-
-
-
                 if (editTaskStepsInput) {
                     editTaskStepsInput.addEventListener('keydown', function (e) {
                         if (e.key === 'Tab') {
                             e.preventDefault();
                             const start = this.selectionStart;
                             const end = this.selectionEnd;
-
                             this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
                             this.selectionStart = this.selectionEnd = start + 2;
+                            return;
+                        }
+
+                        if (e.ctrlKey && e.key === '/') {
+                            e.preventDefault();
+                            insertMarkerAtCursor(this, '/');
+                            return;
+                        }
+
+                        if (e.ctrlKey && e.key === '.') {
+                            e.preventDefault();
+                            insertMarkerAtCursor(this, '>');
+                            return;
+                        }
+
+                        if (e.ctrlKey && e.key === '-') {
+                            e.preventDefault();
+                            insertMarkerAtCursor(this, '-');
+                            return;
                         }
                     });
-                }
-                if (e.ctrlKey && e.key === '/') {
-                    e.preventDefault();
-                    insertMarkerAtCursor(this, '/');
-                    return;
-                }
-
-                if (e.ctrlKey && e.key === '.') {
-                    e.preventDefault();
-                    insertMarkerAtCursor(this, '>');
-                    return;
-                }
-
-                if (e.ctrlKey && e.key === '-') {
-                    e.preventDefault();
-                    insertMarkerAtCursor(this, '-');
-                    return;
                 }
             });
             function insertMarkerHelper(textareaId, marker) {
                 const textarea = document.getElementById(textareaId);
                 if (!textarea) return;
 
+                textarea.focus();
+
                 const start = textarea.selectionStart;
-                const lineStart = textarea.value.lastIndexOf('\n', start - 1) + 1;
+                const end = textarea.selectionEnd;
+                const value = textarea.value;
 
-                // Contar marcadores existentes
-                const currentLine = textarea.value.substring(lineStart, start);
-                const markerMatch = currentLine.match(new RegExp(`^(\\${marker}+)\\s*`));
-                const currentLevel = markerMatch ? markerMatch[1].length : 0;
+                // Encontrar início da linha atual
+                const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+                const lineEnd = value.indexOf('\n', start);
+                const actualLineEnd = lineEnd === -1 ? value.length : lineEnd;
 
-                // Adicionar mais um marcador
-                const newMarker = marker.repeat(currentLevel + 1) + ' ';
+                // Pegar conteúdo da linha atual
+                const currentLine = value.substring(lineStart, actualLineEnd);
+                const beforeCursor = value.substring(lineStart, start);
 
-                textarea.value = textarea.value.substring(0, lineStart) +
-                    newMarker +
-                    textarea.value.substring(lineStart);
+                // Verificar se já tem marcadores no início da linha
+                const markerRegex = new RegExp(`^(\\${marker}+)\\s*(.*)$`);
+                const match = currentLine.match(markerRegex);
 
-                textarea.selectionStart = textarea.selectionEnd = lineStart + newMarker.length;
+                if (match) {
+                    // JÁ TEM MARCADORES - adicionar mais um
+                    const existingMarkers = match[1];
+                    const restOfLine = match[2];
+                    const newMarkers = existingMarkers + marker + ' ';
+
+                    // Substituir linha
+                    const newLine = newMarkers + restOfLine;
+                    textarea.value = value.substring(0, lineStart) + newLine + value.substring(actualLineEnd);
+
+                    // Colocar cursor no FINAL dos marcadores (antes do texto)
+                    const newCursorPos = lineStart + newMarkers.length;
+                    textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+
+                } else {
+                    // NÃO TEM MARCADORES - adicionar o primeiro
+                    const newMarker = marker + ' ';
+                    textarea.value = value.substring(0, lineStart) + newMarker + currentLine + value.substring(actualLineEnd);
+
+                    // Colocar cursor após o marcador
+                    const newCursorPos = lineStart + newMarker.length;
+                    textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+                }
+
                 textarea.focus();
             }
             // Função auxiliar para inserir marcador
             function insertMarkerAtCursor(textarea, marker) {
                 const start = textarea.selectionStart;
                 const end = textarea.selectionEnd;
-                const lineStart = textarea.value.lastIndexOf('\n', start - 1) + 1;
+                const value = textarea.value;
 
-                // Contar quantos marcadores já existem na linha
-                const currentLine = textarea.value.substring(lineStart, start);
-                const markerMatch = currentLine.match(new RegExp(`^(\\${marker}+)\\s*`));
-                const currentLevel = markerMatch ? markerMatch[1].length : 0;
+                // Encontrar início da linha
+                const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+                const lineEnd = value.indexOf('\n', start);
+                const actualLineEnd = lineEnd === -1 ? value.length : lineEnd;
 
-                // Adicionar mais um marcador
-                const newMarker = marker.repeat(currentLevel + 1) + ' ';
+                // Pegar linha atual
+                const currentLine = value.substring(lineStart, actualLineEnd);
 
-                // Inserir no início da linha
-                textarea.value = textarea.value.substring(0, lineStart) +
-                    newMarker +
-                    textarea.value.substring(lineStart);
+                // Verificar marcadores existentes
+                const markerRegex = new RegExp(`^(\\${marker}+)\\s*(.*)$`);
+                const match = currentLine.match(markerRegex);
 
-                textarea.selectionStart = textarea.selectionEnd = lineStart + newMarker.length;
+                if (match) {
+                    // Adicionar mais um marcador
+                    const existingMarkers = match[1];
+                    const restOfLine = match[2];
+                    const newMarkers = existingMarkers + marker + ' ';
+                    const newLine = newMarkers + restOfLine;
+
+                    textarea.value = value.substring(0, lineStart) + newLine + value.substring(actualLineEnd);
+
+                    // Cursor no final dos marcadores
+                    textarea.selectionStart = textarea.selectionEnd = lineStart + newMarkers.length;
+                } else {
+                    // Adicionar primeiro marcador
+                    const newMarker = marker + ' ';
+                    textarea.value = value.substring(0, lineStart) + newMarker + currentLine + value.substring(actualLineEnd);
+
+                    textarea.selectionStart = textarea.selectionEnd = lineStart + newMarker.length;
+                }
             }
 
             // ==================== LIMPEZA AO SAIR ====================
