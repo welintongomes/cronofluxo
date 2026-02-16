@@ -37,7 +37,7 @@
         body {
             background: linear-gradient(263deg, #000000, transparent);
             background-color: #ffffff70;
-            padding: 25px;
+            padding: 0px 7px 5px 15px;
             max-width: 975px;
             margin: 0 auto;
         }
@@ -173,9 +173,9 @@
 
 
         .task-step.completed {
-    background-color: #d4edda;
-    text-decoration: underline;
-}
+            background-color: #d4edda;
+            text-decoration: underline;
+        }
 
 
         .task-step-checkbox {
@@ -283,8 +283,6 @@
 
         .status-message {
             text-align: center;
-            padding: 3px;
-            margin: 3px 0;
             border-radius: var(--border-radius);
             background-color: #d4edda;
             color: #155724;
@@ -375,7 +373,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 11px;
             gap: 0px;
         }
 
@@ -489,7 +487,7 @@
         .create-btn-row {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            /* margin-top: 10px; */
             align-items: center;
             justify-content: space-around;
         }
@@ -567,14 +565,14 @@
         /* Estilos para o botão Mostrar Mais */
         .show-more-container {
             text-align: center;
-            margin: 15px 0;
+            margin: 4px 0;
         }
 
 
         .show-more-btn {
             margin-left: 12px;
             width: 96%;
-            padding: 8px 16px;
+            padding: 5px 14px;
             background-color: #4a90e2;
             color: white;
             border: none;
@@ -1321,10 +1319,10 @@
 
         /* Melhorar feedback visual */
         .step-content {
-    padding: 7px 7px 0px 6px;
-    border-radius: 4px;
-    transition: background 0.2s;
-}
+            padding: 7px 7px 0px 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
 
         .task-step:hover .step-content {
             background: rgba(102, 126, 234, 0.03);
@@ -1390,12 +1388,13 @@
         }
 
         .task-steps.collapsed .expand-all-controls {
-    display: none !important;
-}
+            display: none !important;
+        }
 
-.expand-all-controls {
-    transition: opacity 0.3s ease;
-}
+        .expand-all-controls {
+            transition: opacity 0.3s ease;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 15px;
@@ -1463,21 +1462,19 @@
             }
 
             #searchInput {
-                left: 5.3%;
-                position: relative;
-                display: flex;
-                width: 89.7%;
-                padding: 2px 8px 8px 60px;
+                margin-top: 5px;
+                width: 100%;
+                padding: 7px 10px 10px 50px;
                 border-radius: 20px;
                 border: 1px solid #ccc;
                 font-size: 16px;
             }
 
             #clearSearchBtn {
-                padding: 9px 18px 9px 22px;
+                padding: 9px 18px 9px 21px;
                 position: absolute;
-                left: 21px;
-                top: 47%;
+                left: 0px;
+                top: 53%;
                 transform: translateY(-50%);
                 background: none;
                 border: none;
@@ -3457,39 +3454,39 @@
     }
 `;
 
-// Adicione esta nova função (útil quando você buscar algo):
-function expandToStep(taskId, stepIndex) {
-    const taskElement = document.querySelector(`[data-taskid="${taskId}"]`).closest('.task-item');
-    if (!taskElement) return;
-    
-    const steps = taskElement.querySelectorAll('.task-step');
-    const targetStep = steps[stepIndex];
-    const targetLevel = parseInt(targetStep.getAttribute('data-level'));
-    
-    // Expandir todos os pais até chegar no step desejado
-    let currentLevel = targetLevel;
-    
-    while (currentLevel > 0) {
-        // Encontrar o pai no nível anterior
-        for (let i = stepIndex - 1; i >= 0; i--) {
-            const stepLevel = parseInt(steps[i].getAttribute('data-level'));
-            
-            if (stepLevel === currentLevel - 1) {
-                const icon = steps[i].querySelector('.collapse-icon');
-                if (icon && icon.textContent === '▶') {
-                    // Expandir este nível
-                    toggleStepChildren(taskId, i, null);
+            // Adicione esta nova função (útil quando você buscar algo):
+            function expandToStep(taskId, stepIndex) {
+                const taskElement = document.querySelector(`[data-taskid="${taskId}"]`).closest('.task-item');
+                if (!taskElement) return;
+
+                const steps = taskElement.querySelectorAll('.task-step');
+                const targetStep = steps[stepIndex];
+                const targetLevel = parseInt(targetStep.getAttribute('data-level'));
+
+                // Expandir todos os pais até chegar no step desejado
+                let currentLevel = targetLevel;
+
+                while (currentLevel > 0) {
+                    // Encontrar o pai no nível anterior
+                    for (let i = stepIndex - 1; i >= 0; i--) {
+                        const stepLevel = parseInt(steps[i].getAttribute('data-level'));
+
+                        if (stepLevel === currentLevel - 1) {
+                            const icon = steps[i].querySelector('.collapse-icon');
+                            if (icon && icon.textContent === '▶') {
+                                // Expandir este nível
+                                toggleStepChildren(taskId, i, null);
+                            }
+                            break;
+                        }
+                    }
+
+                    currentLevel--;
                 }
-                break;
+
+                // Scroll até o step
+                targetStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-        }
-        
-        currentLevel--;
-    }
-    
-    // Scroll até o step
-    targetStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
             document.head.appendChild(collapseStyle);
             function renderTasks(tasks, searchValue = '') {
                 const taskList = document.getElementById('taskList');
@@ -3793,109 +3790,109 @@ function expandToStep(taskId, stepIndex) {
             }
 
             function toggleTaskExpansion(event, taskId) {
-    event.preventDefault();
-    event.stopPropagation();
+                event.preventDefault();
+                event.stopPropagation();
 
-    const expandBtn = event.currentTarget;
-    const taskElement = expandBtn.closest('.task-item');
-    const taskSteps = taskElement.querySelector('.task-steps');
-    const expandIcon = expandBtn.querySelector('.expand-icon');
-    const expandText = expandBtn.querySelector('.expand-text');
+                const expandBtn = event.currentTarget;
+                const taskElement = expandBtn.closest('.task-item');
+                const taskSteps = taskElement.querySelector('.task-steps');
+                const expandIcon = expandBtn.querySelector('.expand-icon');
+                const expandText = expandBtn.querySelector('.expand-text');
 
-    const isCurrentlyCollapsed = taskElement.classList.contains('collapsed');
+                const isCurrentlyCollapsed = taskElement.classList.contains('collapsed');
 
-    if (isCurrentlyCollapsed) {
-        // EXPANDINDO A TAREFA
-        expandedTasks.add(taskId);
-        taskElement.classList.remove('collapsed');
-        taskElement.classList.add('expanded');
-        taskSteps.classList.remove('collapsed');
-        expandBtn.classList.add('expanded');
+                if (isCurrentlyCollapsed) {
+                    // EXPANDINDO A TAREFA
+                    expandedTasks.add(taskId);
+                    taskElement.classList.remove('collapsed');
+                    taskElement.classList.add('expanded');
+                    taskSteps.classList.remove('collapsed');
+                    expandBtn.classList.add('expanded');
 
-        expandIcon.textContent = '▲';
-        expandText.textContent = 'Recolher';
+                    expandIcon.textContent = '▲';
+                    expandText.textContent = 'Recolher';
 
-        // IMPORTANTE: Recolher todos os steps (exceto nível 0) ao expandir
-        setTimeout(() => {
-            collapseAllSteps(taskId);
-            focusPendingStep(taskElement);
-        }, 50);
-        
-    } else {
-        // RECOLHENDO A TAREFA
-        clearStepSearch(taskElement);
-        expandedTasks.delete(taskId);
-        taskElement.classList.add('collapsed');
-        taskElement.classList.remove('expanded');
-        taskSteps.classList.add('collapsed');
-        expandBtn.classList.remove('expanded');
+                    // IMPORTANTE: Recolher todos os steps (exceto nível 0) ao expandir
+                    setTimeout(() => {
+                        collapseAllSteps(taskId);
+                        focusPendingStep(taskElement);
+                    }, 50);
 
-        expandIcon.textContent = '▼';
+                } else {
+                    // RECOLHENDO A TAREFA
+                    clearStepSearch(taskElement);
+                    expandedTasks.delete(taskId);
+                    taskElement.classList.add('collapsed');
+                    taskElement.classList.remove('expanded');
+                    taskSteps.classList.add('collapsed');
+                    expandBtn.classList.remove('expanded');
 
-        const totalSteps = taskSteps.querySelectorAll('.task-step').length;
-        expandText.textContent = `Expandir (${totalSteps} passos)`;
-    }
-}
+                    expandIcon.textContent = '▼';
+
+                    const totalSteps = taskSteps.querySelectorAll('.task-step').length;
+                    expandText.textContent = `Expandir (${totalSteps} passos)`;
+                }
+            }
 
             // ==================== FUNÇÕES DE BUSCA LOCAL ====================
-function focusStepBySearch(taskElement, searchValue) {
-    const normalizeText = (text) => {
-        return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    };
+            function focusStepBySearch(taskElement, searchValue) {
+                const normalizeText = (text) => {
+                    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                };
 
-    const steps = taskElement.querySelectorAll('.task-step');
-    const normalizedSearch = normalizeText(searchValue.trim());
+                const steps = taskElement.querySelectorAll('.task-step');
+                const normalizedSearch = normalizeText(searchValue.trim());
 
-    if (!normalizedSearch) {
-        clearStepSearch(taskElement);
-        return;
-    }
+                if (!normalizedSearch) {
+                    clearStepSearch(taskElement);
+                    return;
+                }
 
-    // Limpar destaques anteriores
-    steps.forEach(step => {
-        step.classList.remove('step-focus');
-        const content = step.querySelector('.step-content');
-        if (content && content.dataset.original) {
-            content.innerHTML = content.dataset.original;
-        }
-    });
+                // Limpar destaques anteriores
+                steps.forEach(step => {
+                    step.classList.remove('step-focus');
+                    const content = step.querySelector('.step-content');
+                    if (content && content.dataset.original) {
+                        content.innerHTML = content.dataset.original;
+                    }
+                });
 
-    currentSearchMatches = [];
-    
-    steps.forEach((step, stepIndex) => {
-        const content = step.querySelector('.step-content');
-        if (!content) return;
+                currentSearchMatches = [];
 
-        const originalText = content.textContent;
-        const normalizedText = normalizeText(originalText);
+                steps.forEach((step, stepIndex) => {
+                    const content = step.querySelector('.step-content');
+                    if (!content) return;
 
-        if (normalizedText.includes(normalizedSearch)) {
-            if (!content.dataset.original) {
-                content.dataset.original = originalText;
+                    const originalText = content.textContent;
+                    const normalizedText = normalizeText(originalText);
+
+                    if (normalizedText.includes(normalizedSearch)) {
+                        if (!content.dataset.original) {
+                            content.dataset.original = originalText;
+                        }
+
+                        let highlightedText = originalText;
+                        const regex = new RegExp(`(${searchValue.split('').join('[àáâãäåèéêëìíîïòóôõöùúûü]*')})`, 'gi');
+                        highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+
+                        content.innerHTML = highlightedText;
+                        currentSearchMatches.push(step);
+
+                        // IMPORTANTE: Expandir até este step (não expandir tudo)
+                        const taskId = step.getAttribute('data-task-id');
+                        const stepIdx = parseInt(step.getAttribute('data-step-index'));
+                        if (taskId && !isNaN(stepIdx)) {
+                            expandToStep(taskId, stepIdx);
+                        }
+                    }
+                });
+
+                if (currentSearchMatches.length === 0) return;
+
+                currentMatchIndex = 0;
+                focusOnCurrentMatch(taskElement);
+                updateSearchCounter(taskElement);
             }
-
-            let highlightedText = originalText;
-            const regex = new RegExp(`(${searchValue.split('').join('[àáâãäåèéêëìíîïòóôõöùúûü]*')})`, 'gi');
-            highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
-
-            content.innerHTML = highlightedText;
-            currentSearchMatches.push(step);
-            
-            // IMPORTANTE: Expandir até este step (não expandir tudo)
-            const taskId = step.getAttribute('data-task-id');
-            const stepIdx = parseInt(step.getAttribute('data-step-index'));
-            if (taskId && !isNaN(stepIdx)) {
-                expandToStep(taskId, stepIdx);
-            }
-        }
-    });
-
-    if (currentSearchMatches.length === 0) return;
-
-    currentMatchIndex = 0;
-    focusOnCurrentMatch(taskElement);
-    updateSearchCounter(taskElement);
-}
 
             // ==================== FUNÇÃO GENÉRICA DE BUSCA (REUTILIZÁVEL) ====================
             function performSearch(searchValue, config) {
@@ -3962,16 +3959,16 @@ function focusStepBySearch(taskElement, searchValue) {
 
                 currentMatchIndex = 0;
                 focusOnCurrentMatch(taskElement);
-if (currentSearchMatches.length > 0) {
-    // Expandir apenas até o primeiro resultado
-    const firstMatch = currentSearchMatches[0];
-    const taskId = firstMatch.getAttribute('data-task-id');
-    const stepIdx = parseInt(firstMatch.getAttribute('data-step-index'));
-    
-    if (taskId && !isNaN(stepIdx)) {
-        expandToStep(taskId, stepIdx);
-    }
-}
+                if (currentSearchMatches.length > 0) {
+                    // Expandir apenas até o primeiro resultado
+                    const firstMatch = currentSearchMatches[0];
+                    const taskId = firstMatch.getAttribute('data-task-id');
+                    const stepIdx = parseInt(firstMatch.getAttribute('data-step-index'));
+
+                    if (taskId && !isNaN(stepIdx)) {
+                        expandToStep(taskId, stepIdx);
+                    }
+                }
                 if (config.onComplete) {
                     config.onComplete(taskElement);
                 }
@@ -4287,36 +4284,36 @@ if (currentSearchMatches.length > 0) {
                 }
             }
 
-function clearStepSearch(taskElement) {
-    const input = taskElement.querySelector('.step-search-input');
-    const steps = taskElement.querySelectorAll('.task-step');
-    const counter = taskElement.querySelector('.search-counter');
+            function clearStepSearch(taskElement) {
+                const input = taskElement.querySelector('.step-search-input');
+                const steps = taskElement.querySelectorAll('.task-step');
+                const counter = taskElement.querySelector('.search-counter');
 
-    if (input) input.value = '';
-    if (counter) counter.remove();
+                if (input) input.value = '';
+                if (counter) counter.remove();
 
-    steps.forEach(step => {
-        step.classList.remove('step-focus');
-        // NÃO REMOVER: step.style.display = ''; ← ESTA LINHA CAUSA O PROBLEMA
-        
-        const content = step.querySelector('.step-content');
-        if (content && content.dataset.original) {
-            content.innerHTML = content.dataset.original;
-            delete content.dataset.original;
-        }
-    });
+                steps.forEach(step => {
+                    step.classList.remove('step-focus');
+                    // NÃO REMOVER: step.style.display = ''; ← ESTA LINHA CAUSA O PROBLEMA
 
-    currentSearchMatches = [];
-    currentMatchIndex = 0;
-    
-    // IMPORTANTE: Recolher tudo após limpar a busca
-    const taskId = taskElement.querySelector('[data-taskid]')?.getAttribute('data-taskid');
-    if (taskId) {
-        setTimeout(() => {
-            collapseAllSteps(taskId);
-        }, 100);
-    }
-}
+                    const content = step.querySelector('.step-content');
+                    if (content && content.dataset.original) {
+                        content.innerHTML = content.dataset.original;
+                        delete content.dataset.original;
+                    }
+                });
+
+                currentSearchMatches = [];
+                currentMatchIndex = 0;
+
+                // IMPORTANTE: Recolher tudo após limpar a busca
+                const taskId = taskElement.querySelector('[data-taskid]')?.getAttribute('data-taskid');
+                if (taskId) {
+                    setTimeout(() => {
+                        collapseAllSteps(taskId);
+                    }, 100);
+                }
+            }
 
             // ==================== FUNÇÕES DE PAGINAÇÃO ====================
             function updatePaginationInfo(totalItems, totalPages) {
