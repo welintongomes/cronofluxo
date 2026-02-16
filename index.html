@@ -1420,6 +1420,103 @@
             min-height: 310;
         }
 
+        /* ==================== FEEDBACK VISUAL DE TRANSIÇÃO ==================== */
+
+        .task-item {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Destacar tarefa ativa */
+        .task-item.expanded {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            border: 2px solid #667eea;
+            transform: scale(1.02);
+        }
+
+        /* Animação ao expandir */
+        @keyframes taskExpand {
+            0% {
+                opacity: 0.5;
+                transform: scale(0.98);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1.02);
+            }
+        }
+
+        .task-item.expanded {
+            animation: taskExpand 0.3s ease;
+        }
+
+        /* Animação ao fechar */
+        @keyframes taskCollapse {
+            0% {
+                opacity: 1;
+                transform: scale(1.02);
+            }
+
+            100% {
+                opacity: 0.9;
+                transform: scale(1);
+            }
+        }
+
+        .task-item.collapsed {
+            animation: taskCollapse 0.3s ease;
+        }
+
+        /* Steps com transição suave */
+        .task-steps {
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+        }
+
+        .task-steps.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        /* ==================== INDICADOR DE TAREFA ATIVA ==================== */
+
+        .task-item.expanded::before {
+            content: '📍';
+            position: absolute;
+            left: -15px;
+            top: 20px;
+            font-size: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+        }
+
+        /* Badge "ATIVA" */
+        .task-item.expanded .task-name::after {
+            content: 'ATIVA';
+            display: inline-block;
+            margin-left: 10px;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 10px;
+            vertical-align: middle;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 15px;
@@ -2689,6 +2786,22 @@
 
                         saveTask(task);
                         clearCreateForm();
+                        // ===== ADICIONE ESTAS LINHAS =====
+                        // Ocultar o formulário
+                        const container = document.querySelector('.container');
+                        const toggleBtn = document.getElementById('toggleContainerBtn');
+                        if (container) container.style.display = 'none';
+                        if (toggleBtn) toggleBtn.style.display = 'none';
+
+                        // Mostrar todas as tarefas novamente
+                        setTimeout(() => {
+                            const allTaskItems = document.querySelectorAll('.task-item');
+                            allTaskItems.forEach(item => {
+                                item.style.display = 'block';
+                            });
+                        }, 100);
+                        // ===== FIM =====
+
                     });
                     return;
                 }
@@ -2703,6 +2816,18 @@
 
                 saveTask(task);
                 clearCreateForm();
+                const container = document.querySelector('.container');
+                const toggleBtn = document.getElementById('toggleContainerBtn');
+                if (container) container.style.display = 'none';
+                if (toggleBtn) toggleBtn.style.display = 'none';
+
+                // Mostrar todas as tarefas novamente
+                setTimeout(() => {
+                    const allTaskItems = document.querySelectorAll('.task-item');
+                    allTaskItems.forEach(item => {
+                        item.style.display = 'block';
+                    });
+                }, 100);
             }
 
             function clearCreateForm() {
@@ -3368,6 +3493,20 @@
                     console.error('Erro ao carregar cronogramas:', event.target.error);
                     showStatusMessage('Erro ao carregar cronogramas', 'error');
                 };
+                // ===== REABRIR ÚLTIMA TAREFA ATIVA =====
+                if (expandedTasks.size > 0) {
+                    const lastExpandedId = Array.from(expandedTasks)[0];
+
+                    setTimeout(() => {
+                        const taskElement = document.querySelector(`[data-taskid="${lastExpandedId}"]`)?.closest('.task-item');
+                        if (taskElement && !taskElement.classList.contains('expanded')) {
+                            const expandBtn = taskElement.querySelector('.expand-btn');
+                            if (expandBtn) {
+                                expandBtn.click();
+                            }
+                        }
+                    }, 200);
+                }
             }
 
             function filterByNormalizedSearch(items, searchQuery, fieldAccessor, highlight = false) {
@@ -3663,20 +3802,20 @@
                     <small>Progresso: ${completedSteps}/${totalSteps} (${Math.round(progressPercentage)}%)</small>
                 </div>
 
-<div class="task-steps-wrapper">
-    <div class="task-steps ${isExpanded ? '' : 'collapsed'}">
-        <!-- ADICIONE ESTAS LINHAS: -->
-<div class="expand-all-controls" style="margin: 10px 0; display: flex; gap: 10px;">
-    <button onclick="expandAllSteps(${task.id})" class="btn-small" style="font-size: 12px; padding: 5px 10px;">
-        ▼ Expandir Tudo
-    </button>
-    <button onclick="collapseAllSteps(${task.id})" class="btn-small" style="font-size: 12px; padding: 5px 10px;">
-        ▶ Recolher Tudo
-    </button>
-</div>
-        ${renderStepsWithCollapse(task.steps, task.id)}
-    </div>
-</div>
+                <div class="task-steps-wrapper">
+                    <div class="task-steps ${isExpanded ? '' : 'collapsed'}">
+                        <!-- ADICIONE ESTAS LINHAS: -->
+                <div class="expand-all-controls" style="margin: 10px 0; display: flex; gap: 10px;">
+                    <button onclick="expandAllSteps(${task.id})" class="btn-small" style="font-size: 12px; padding: 5px 10px;">
+                        ▼ Expandir Tudo
+                    </button>
+                    <button onclick="collapseAllSteps(${task.id})" class="btn-small" style="font-size: 12px; padding: 5px 10px;">
+                        ▶ Recolher Tudo
+                    </button>
+                </div>
+                        ${renderStepsWithCollapse(task.steps, task.id)}
+                    </div>
+                </div>
                 <div class="task-local-search">
                     <button class="step-voice-search-btn searchvoice" title="Pesquisar por voz">🎙️</button>
                     <button class="clear-step-search-btn cuqui" title="Limpar pesquisa">✖</button>
@@ -3923,6 +4062,41 @@
                 }
             }
 
+            function closeAllOtherTasks(currentTaskId) {
+                // Buscar todas as tarefas expandidas
+                const allTaskItems = document.querySelectorAll('.task-item');
+
+                allTaskItems.forEach(taskItem => {
+                    const editBtn = taskItem.querySelector('.edit-task-btn');
+                    if (!editBtn) return;
+
+                    const taskId = parseInt(editBtn.getAttribute('data-taskid'));
+
+                    // Se não for a tarefa atual E estiver expandida
+                    if (taskId !== currentTaskId && taskItem.classList.contains('expanded')) {
+                        const expandBtn = taskItem.querySelector('.expand-btn');
+                        const taskSteps = taskItem.querySelector('.task-steps');
+                        const expandIcon = expandBtn.querySelector('.expand-icon');
+                        const expandText = expandBtn.querySelector('.expand-text');
+
+                        // Limpar busca antes de fechar
+                        clearStepSearch(taskItem);
+
+                        // Fechar a tarefa
+                        expandedTasks.delete(taskId);
+                        taskItem.classList.add('collapsed');
+                        taskItem.classList.remove('expanded');
+                        taskSteps.classList.add('collapsed');
+                        expandBtn.classList.remove('expanded');
+
+                        expandIcon.textContent = '▼';
+
+                        const totalSteps = taskSteps.querySelectorAll('.task-step').length;
+                        expandText.textContent = `Expandir (${totalSteps} passos)`;
+                    }
+                });
+            }
+
             function toggleTaskExpansion(event, taskId) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -3936,8 +4110,22 @@
                 const isCurrentlyCollapsed = taskElement.classList.contains('collapsed');
 
                 if (isCurrentlyCollapsed) {
+                    // ===== OCULTAR TODOS OS OUTROS TASK-ITEMS =====
+                    const allTaskItems = document.querySelectorAll('.task-item');
+                    allTaskItems.forEach(item => {
+                        if (item !== taskElement) {
+                            item.style.display = 'none';
+                        }
+                    });
+                    // ===== FIM =====
+
+                    // Fechar todas as outras tarefas
+                    closeAllOtherTasks(taskId);
+
                     // EXPANDINDO A TAREFA
+                    expandedTasks.clear();
                     expandedTasks.add(taskId);
+
                     taskElement.classList.remove('collapsed');
                     taskElement.classList.add('expanded');
                     taskSteps.classList.remove('collapsed');
@@ -3946,13 +4134,29 @@
                     expandIcon.textContent = '▲';
                     expandText.textContent = 'Recolher';
 
-                    // IMPORTANTE: Recolher todos os steps (exceto nível 0) ao expandir
+                    // Recolher todos os steps (exceto nível 0) ao expandir
                     setTimeout(() => {
                         collapseAllSteps(taskId);
                         focusPendingStep(taskElement);
                     }, 50);
 
+                    // Scroll suave até a tarefa
+                    setTimeout(() => {
+                        taskElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                            inline: 'nearest'
+                        });
+                    }, 100);
+
                 } else {
+                    // ===== MOSTRAR TODOS OS TASK-ITEMS NOVAMENTE =====
+                    const allTaskItems = document.querySelectorAll('.task-item');
+                    allTaskItems.forEach(item => {
+                        item.style.display = 'block';
+                    });
+                    // ===== FIM =====
+
                     // RECOLHENDO A TAREFA
                     clearStepSearch(taskElement);
                     expandedTasks.delete(taskId);
@@ -4935,6 +5139,13 @@
                         if (resetBtn) resetBtn.style.display = 'inline-block';
 
                         if (container && container.style.display === 'none') {
+                            // ===== OCULTAR TODAS AS TAREFAS =====
+                            const allTaskItems = document.querySelectorAll('.task-item');
+                            allTaskItems.forEach(item => {
+                                item.style.display = 'none';
+                            });
+                            // ===== FIM =====
+
                             container.style.display = 'block';
                             if (toggleBtn) {
                                 toggleBtn.style.display = 'inline-block';
@@ -5010,6 +5221,13 @@
                         container.style.display = 'none';
                         toggleBtn.style.display = 'none';
                         if (resetBtn) resetBtn.style.display = 'none';
+
+                        // ===== MOSTRAR TODAS AS TAREFAS NOVAMENTE =====
+                        const allTaskItems = document.querySelectorAll('.task-item');
+                        allTaskItems.forEach(item => {
+                            item.style.display = 'block';
+                        });
+                        // ===== FIM =====
                     });
                 }
 
