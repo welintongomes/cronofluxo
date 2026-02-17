@@ -85,7 +85,7 @@
 
 
         textarea {
-            height: 273px;
+            height: 166px;
             resize: vertical;
         }
 
@@ -213,10 +213,11 @@
 
 
         .buttons-row {
+            bottom: 2px;
+            z-index: 9999;
+            position: fixed;
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: space-around;
+            gap: 138px;
         }
 
 
@@ -563,16 +564,17 @@
         }
 
         /* Estilos para o botão Mostrar Mais */
-        .show-more-container {
+        /* .show-more-container {
             text-align: center;
             margin: 4px 0;
-        }
+        } */
 
 
         .show-more-btn {
-            margin-left: 20px;
+            font-size: 11px;
+            margin-left: 2px;
             width: 90%;
-            padding: 9px 13px;
+            padding: 0px 20px;
             background-color: #4a90e2;
             color: white;
             border: none;
@@ -590,7 +592,11 @@
         .view-mode-container {
             text-align: center;
             padding-left: 0px;
+            max-height: 562px;
+            /* limite de altura */
+            overflow-y: auto;
         }
+
 
 
         #viewModeSelect {
@@ -960,8 +966,8 @@
         }
 
         .task-steps {
-            min-height: 310px;
-            max-height: 311px;
+            min-height: 212px;
+            max-height: 213px;
             /* ajuste como quiser */
             overflow-y: auto;
             padding-right: 6px;
@@ -1164,6 +1170,7 @@
             font-weight: bold;
             margin-right: 5px;
         }
+
         .task-step[data-level="6"] .step-content::before {
             content: '✻ ';
             color: green;
@@ -1205,6 +1212,7 @@
             font-weight: bold;
             margin-right: 5px;
         }
+
         .task-step[data-level="12"] .step-content::before {
             content: '✻ ';
             color: green;
@@ -1246,6 +1254,7 @@
             font-weight: bold;
             margin-right: 5px;
         }
+
         .task-step[data-level="18"] .step-content::before {
             content: '✻ ';
             color: green;
@@ -1601,6 +1610,15 @@
             overflow: hidden;
         }
 
+        .mostraEmodos {
+            margin: 1px;
+            padding: 0px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
         /* ==================== INDICADOR DE TAREFA ATIVA ==================== */
 
         /* .task-item.expanded::before {
@@ -1649,10 +1667,10 @@
 
             #createTaskBtn {
                 position: fixed;
-                bottom: 51.1%;
-                right: 92.1%;
+                bottom: 9.1%;
+                right: 42.1%;
                 z-index: 1000;
-                padding: 29px 7.3px;
+                padding: 15px 26.3px;
                 background-color: #2b8a3e;
                 color: white;
                 border: none;
@@ -1662,10 +1680,10 @@
 
             #audioBtn {
                 position: fixed;
-                bottom: 42%;
-                right: 92%;
+                bottom: 9.2%;
+                right: 24%;
                 z-index: 1000;
-                padding: 21px 2px;
+                padding: 11px 20px;
                 background-color: #0d6efd;
                 color: white;
                 border: none;
@@ -1676,10 +1694,10 @@
 
             #voiceSearchBtn {
                 position: fixed;
-                bottom: 31.1%;
-                right: 92%;
-                z-index: 9999;
-                padding: 28px 5px;
+                bottom: 9.1%;
+                right: 60.2%;
+                z-index: 9998;
+                padding: 12px 23px;
                 background-color: #6f42c1;
                 color: white;
                 border: none;
@@ -1707,8 +1725,11 @@
             }
 
             #searchInput {
+                bottom: 34px;
+                position: fixed;
+                z-index: 9999;
                 margin-top: 5px;
-                width: 88%;
+                width: 91%;
                 padding: 7px 10px 10px 50px;
                 border-radius: 20px;
                 border: 1px solid #ccc;
@@ -1716,10 +1737,11 @@
             }
 
             #clearSearchBtn {
+                z-index: 9999;
                 padding: 9px 18px 9px 21px;
                 position: absolute;
-                left: 20px;
-                top: 53%;
+                left: 0px;
+                top: 636px;
                 transform: translateY(-50%);
                 background: none;
                 border: none;
@@ -1901,62 +1923,106 @@
                 margin-bottom: 0px;
             }
 
+            .buttons-row {
+                right: 17px;
+                bottom: 76.6px;
+                z-index: 9999;
+                position: fixed;
+                display: flex;
+                gap: 3.8px;
+                flex-direction: column;
+            }
+
+            .show-more-btn {
+                bottom: 76px;
+                position: fixed;
+                font-size: 14px;
+                margin-left: 1px;
+                width: 17%;
+                padding: 0px 7px;
+                background-color: #4a90e2;
+                color: white;
+                border: none;
+                border-radius: 11px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            #exportBtn {
+                margin: 1px;
+                padding: 1px;
+            }
+
+            #importBtn {
+                margin: 0px;
+                padding: 2px 15px 2px 19px;
+            }
+
+            #viewModeSelect {
+                text-align: center;
+                width: 96%;
+                padding: 5px;
+                border-radius: 13px;
+                border: 1px solid #ddd;
+            }
+
         }
+
         /* ==================== SISTEMA SIMPLES DE CORES POR GRUPO ==================== */
 
-/* Cor padrão para todos os níveis pares (0, 2, 4, 6...) */
-.task-step[data-level="0"],
-.task-step[data-level="2"],
-.task-step[data-level="4"],
-.task-step[data-level="6"],
-.task-step[data-level="8"],
-.task-step[data-level="10"],
-.task-step[data-level="12"],
-.task-step[data-level="14"],
-.task-step[data-level="16"],
-.task-step[data-level="18"],
-.task-step[data-level="20"],
-.task-step[data-level="22"],
-.task-step[data-level="24"],
-.task-step[data-level="26"],
-.task-step[data-level="28"],
-.task-step[data-level="30"],
-.task-step[data-level="32"],
-.task-step[data-level="34"],
-.task-step[data-level="36"],
-.task-step[data-level="38"],
-.task-step[data-level="40"],
-.task-step[data-level="42"] {
-    background: #e3f2fd;
-    border-left: 4px solid #009712;
-}
+        /* Cor padrão para todos os níveis pares (0, 2, 4, 6...) */
+        .task-step[data-level="0"],
+        .task-step[data-level="2"],
+        .task-step[data-level="4"],
+        .task-step[data-level="6"],
+        .task-step[data-level="8"],
+        .task-step[data-level="10"],
+        .task-step[data-level="12"],
+        .task-step[data-level="14"],
+        .task-step[data-level="16"],
+        .task-step[data-level="18"],
+        .task-step[data-level="20"],
+        .task-step[data-level="22"],
+        .task-step[data-level="24"],
+        .task-step[data-level="26"],
+        .task-step[data-level="28"],
+        .task-step[data-level="30"],
+        .task-step[data-level="32"],
+        .task-step[data-level="34"],
+        .task-step[data-level="36"],
+        .task-step[data-level="38"],
+        .task-step[data-level="40"],
+        .task-step[data-level="42"] {
+            background: #e3f2fd;
+            border-left: 4px solid #009712;
+        }
 
-/* Cor alternada para níveis ímpares (1, 3, 5, 7...) */
-.task-step[data-level="1"],
-.task-step[data-level="3"],
-.task-step[data-level="5"],
-.task-step[data-level="7"],
-.task-step[data-level="9"],
-.task-step[data-level="11"],
-.task-step[data-level="13"],
-.task-step[data-level="15"],
-.task-step[data-level="17"],
-.task-step[data-level="19"],
-.task-step[data-level="21"],
-.task-step[data-level="23"],
-.task-step[data-level="25"],
-.task-step[data-level="27"],
-.task-step[data-level="29"],
-.task-step[data-level="31"],
-.task-step[data-level="33"],
-.task-step[data-level="35"],
-.task-step[data-level="37"],
-.task-step[data-level="39"],
-.task-step[data-level="41"],
-.task-step[data-level="43"] {
-    background: #fff3e0;
-    border-left: 4px solid #0008f7;
-} 
+        /* Cor alternada para níveis ímpares (1, 3, 5, 7...) */
+        .task-step[data-level="1"],
+        .task-step[data-level="3"],
+        .task-step[data-level="5"],
+        .task-step[data-level="7"],
+        .task-step[data-level="9"],
+        .task-step[data-level="11"],
+        .task-step[data-level="13"],
+        .task-step[data-level="15"],
+        .task-step[data-level="17"],
+        .task-step[data-level="19"],
+        .task-step[data-level="21"],
+        .task-step[data-level="23"],
+        .task-step[data-level="25"],
+        .task-step[data-level="27"],
+        .task-step[data-level="29"],
+        .task-step[data-level="31"],
+        .task-step[data-level="33"],
+        .task-step[data-level="35"],
+        .task-step[data-level="37"],
+        .task-step[data-level="39"],
+        .task-step[data-level="41"],
+        .task-step[data-level="43"] {
+            background: #fff3e0;
+            border-left: 4px solid #0008f7;
+        }
     </style>
 </head>
 
@@ -2059,6 +2125,12 @@
     <div id="statusMessage" class="status-message"></div>
     <!-- Adicionar barra de pesquisa acima da lista de tarefas -->
 
+    <div class="search-container">
+        <div class="form-group search-box">
+            <input type="text" id="searchInput" placeholder="Pesquisar cronogramas...">
+            <button id="clearSearchBtn">✕</button>
+        </div>
+    </div>
 
 
     <!-- Seletor para modo de visualização -->
@@ -2066,10 +2138,14 @@
         <div class="audio-btn-container">
         </div>
         <button id="voiceSearchBtn" title="Pesquisar por voz">🔍</button>
-        <select id="viewModeSelect">
-            <option value="compact">Modo Compacto (2 últimos)</option>
-            <option value="all">Mostrar Todos</option>
-        </select>
+        <!-- Botão "Mostrar Mais" -->
+        <div class="mostraEmodos">
+
+            <select id="viewModeSelect">
+                <option value="compact">Modo Compacto (2 últimos)</option>
+                <option value="all">Mostrar Todos</option>
+            </select>
+        </div>
 
 
 
@@ -2095,24 +2171,18 @@
             </select>
         </div>
 
-        <div class="search-container">
-            <div class="form-group search-box">
-                <input type="text" id="searchInput" placeholder="Pesquisar cronogramas...">
-                <button id="clearSearchBtn">✕</button>
-            </div>
-        </div>
 
-        <!-- Botão "Mostrar Mais" -->
+
+
+
+        <div class="buttons-row">
+            <button id="exportBtn">Exportar</button>
+            <button id="importBtn">Importar</button>
+            <input type="file" id="importInput" class="file-input" accept=".json">
+        </div>
         <div class="show-more-container">
             <button id="showMoreBtn" class="show-more-btn">Mostrar Mais</button>
         </div>
-
-        <div class="buttons-row">
-            <button id="exportBtn">Exportar Cronogramas</button>
-            <button id="importBtn">Importar Cronogramas</button>
-            <input type="file" id="importInput" class="file-input" accept=".json">
-        </div>
-
 
         <div id="taskModal" class="modal">
             <div class="modal-content">
