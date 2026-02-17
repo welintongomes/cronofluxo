@@ -44,7 +44,7 @@
 
 
         h1 {
-            font-size: 57px;
+            font-size: 25px;
             font-family: auto;
             color: #ffffff91;
             text-align: center;
@@ -371,13 +371,13 @@
 
 
         /* Estilos para a paginação */
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 11px;
-            gap: 0px;
-        }
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0px;
+    gap: 0px;
+}
 
 
         .pagination-controls button {
@@ -590,13 +590,14 @@
         }
 
 
-        .view-mode-container {
-            text-align: center;
-            padding-left: 0px;
-            max-height: 528px;
-            /* limite de altura */
-            overflow-y: auto;
-        }
+.view-mode-container {
+    border-radius: 13px;
+    text-align: center;
+    padding-left: 0px;
+    max-height: 565px;
+    overflow-y: auto;
+    overflow-x: clip;
+}
 
 
 
@@ -967,8 +968,8 @@
         }
 
         .task-steps {
-            min-height: 181px;
-            max-height: 182px;
+            min-height: 258px;
+            max-height: 259px;
             /* ajuste como quiser */
             overflow-y: auto;
             padding-right: 6px;
@@ -1725,32 +1726,32 @@
                 align-items: stretch;
             }
 
-            #searchInput {
-                bottom: 34px;
-                position: fixed;
-                z-index: 9999;
-                margin-top: 5px;
-                width: 91%;
-                padding: 7px 10px 10px 50px;
-                border-radius: 20px;
-                border: 1px solid #ccc;
-                font-size: 16px;
-            }
+#searchInput {
+    bottom: 37px;
+    position: fixed;
+    z-index: 9999;
+    margin-top: 5px;
+    width: 91%;
+    padding: 7px 10px 10px 50px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
 
-            #clearSearchBtn {
-                z-index: 9999;
-                padding: 9px 18px 9px 21px;
-                position: fixed;
-                left: 10px;
-                top: 730px;
-                transform: translateY(-50%);
-                background: none;
-                border: none;
-                color: #999;
-                cursor: pointer;
-                font-size: 20px;
-                display: none;
-            }
+#clearSearchBtn {
+    z-index: 9999;
+    padding: 9px 18px 9px 21px;
+    position: fixed;
+    left: 9px;
+    top: 728px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 20px;
+    display: none;
+}
 
             .task-actions {
                 padding: 7px 6px 3px 0px;
@@ -2029,12 +2030,9 @@
 
 
 <body>
-    <h1>Cronogramas</h1>
-
+    <!-- <h1>Cronogramas</h1> -->
 
     <!-- Botão para mostrar a guia -->
-
-
 
     <!-- Container oculto inicialmente -->
     <div class="container" style="display: none;">
@@ -2122,7 +2120,24 @@
 
     <div id="statusMessage" class="status-message"></div>
     <!-- Adicionar barra de pesquisa acima da lista de tarefas -->
-
+    <!-- Adicionar paginação abaixo da lista de tarefas -->
+    <div class="pagination-controls" id="paginationControls">
+        <button id="prevPageBtn">Anterior</button>
+        <span id="pageInfo">Página 1 de 1</span>
+        <button id="nextPageBtn">Próximo</button>
+        <select id="pageSizeSelect">
+            <option value="2">2 por página</option>
+            <option value="5">5 por página</option>
+            <option value="10" selected>10 por página</option>
+            <option value="20">20 por página</option>
+        </select>
+    </div>
+    <div class="mostraEmodos">
+        <select id="viewModeSelect">
+            <option value="compact">Modo Compacto (2 últimos)</option>
+            <option value="all">Mostrar Todos</option>
+        </select>
+    </div>
     <div class="search-container">
         <div class="form-group search-box">
             <input type="text" id="searchInput" placeholder="Pesquisar cronogramas...">
@@ -2137,13 +2152,7 @@
         </div>
 
         <!-- Botão "Mostrar Mais" -->
-        <div class="mostraEmodos">
 
-            <select id="viewModeSelect">
-                <option value="compact">Modo Compacto (2 últimos)</option>
-                <option value="all">Mostrar Todos</option>
-            </select>
-        </div>
 
 
 
@@ -2156,18 +2165,7 @@
 
 
 
-        <!-- Adicionar paginação abaixo da lista de tarefas -->
-        <div class="pagination-controls" id="paginationControls">
-            <button id="prevPageBtn">Anterior</button>
-            <span id="pageInfo">Página 1 de 1</span>
-            <button id="nextPageBtn">Próximo</button>
-            <select id="pageSizeSelect">
-                <option value="2">2 por página</option>
-                <option value="5">5 por página</option>
-                <option value="10" selected>10 por página</option>
-                <option value="20">20 por página</option>
-            </select>
-        </div>
+
 
 
 
@@ -5390,7 +5388,7 @@
                         const container = document.querySelector('.container');
                         const toggleBtn = document.getElementById('toggleContainerBtn');
                         const viewModeBar = document.querySelector('.mostraEmodos'); // 👈 ADICIONE
-        if (viewModeBar) viewModeBar.style.display = 'none'; // 👈 ADICIONE
+                        if (viewModeBar) viewModeBar.style.display = 'none'; // 👈 ADICIONE
 
                         if (resetBtn) resetBtn.style.display = 'inline-block';
 
@@ -5479,7 +5477,7 @@
                         if (resetBtn) resetBtn.style.display = 'none';
 
                         const viewModeBar = document.querySelector('.mostraEmodos'); // 👈 ADICIONE
-        if (viewModeBar) viewModeBar.style.display = 'block'; // 👈 ADICIONE
+                        if (viewModeBar) viewModeBar.style.display = 'block'; // 👈 ADICIONE
 
                         // ===== MOSTRAR TODAS AS TAREFAS NOVAMENTE =====
                         const allTaskItems = document.querySelectorAll('.task-item');
