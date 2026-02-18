@@ -345,7 +345,7 @@
             display: flex;
             gap: 8px;
             margin-top: 8px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
 
         #toggleContainerBtn {
@@ -692,14 +692,14 @@
             border-radius: 3px;
         }
 
-.task-steps {
-    min-height: 343px;
-    max-height: 344px;
-    overflow-y: auto;
-    padding: 8px 16px 12px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
-}
+        .task-steps {
+            min-height: 153px;
+            max-height: 344px;
+            overflow-y: auto;
+            padding: 8px 16px 12px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+        }
 
         .task-steps::-webkit-scrollbar {
             width: 4px;
@@ -1412,6 +1412,11 @@
             padding: 0px 5px 0px 10px;
         }
 
+        #taskSteps {
+            white-space: pre;
+            overflow-x: auto;
+        }
+
         /* ── Mobile ── */
         @media (max-width: 768px) {
             body {
@@ -1477,7 +1482,17 @@
             }
 
             .alinhe {
+                justify-content: space-between;
                 flex-direction: row;
+            }
+
+            .task-steps {
+                min-height: 250px;
+                max-height: 344px;
+                overflow-y: auto;
+                padding: 8px 16px 12px;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
             }
         }
     </style>
