@@ -728,6 +728,7 @@
 
         /* ── Individual step ── */
         .task-step {
+            clip-path: content-box;
             display: flex;
             align-items: center;
             padding: 7px 10px;
@@ -738,7 +739,6 @@
             position: relative;
             white-space: nowrap;
             width: max-content;
-            min-width: 100%;
             animation: slideIn 0.2s ease;
         }
 
@@ -780,7 +780,7 @@
         .task-step[data-level="38"],
         .task-step[data-level="40"],
         .task-step[data-level="42"] {
-            background: rgba(0, 122, 255, 0.04);
+            background: rgba(0, 255, 55, 0.171);
             border-left: 3px solid var(--green);
         }
 
@@ -806,7 +806,7 @@
         .task-step[data-level="39"],
         .task-step[data-level="41"],
         .task-step[data-level="43"] {
-            background: rgba(255, 149, 0, 0.05);
+            background: rgba(46, 127, 167, 0.179);
             border-left: 3px solid var(--blue);
         }
 
@@ -865,7 +865,7 @@
         .task-step[data-level="19"] .step-content::before,
         .task-step[data-level="21"] .step-content::before,
         .task-step[data-level="23"] .step-content::before {
-            content: '◇ ';
+            content: '◆ ';
             color: var(--blue);
             font-size: 8px;
         }
@@ -880,14 +880,15 @@
         }
 
         .collapse-icon {
+            padding: 0px;
             flex-shrink: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            font-size: 11px;
+            width: 42px;
+            /* height: 17px; */
+            /* border-radius: 6px; */
+            font-size: 21px;
             font-weight: 700;
             color: var(--blue);
             margin-right: 6px;
@@ -1494,6 +1495,11 @@
                 scrollbar-width: thin;
                 scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
             }
+        }
+
+        .step-final {
+            color: #dc3545 !important;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -3241,7 +3247,6 @@
         // Função para colapsar/expandir filhos
         // SUBSTITUA a função completa:
         function toggleStepChildren(taskId, stepIndex, event) {
-            // Prevenir propagação do clique
             if (event) {
                 event.stopPropagation();
                 event.preventDefault();
@@ -3254,29 +3259,25 @@
             const clickedStep = steps[stepIndex];
             const clickedLevel = parseInt(clickedStep.getAttribute('data-level'));
             const icon = clickedStep.querySelector('.collapse-icon');
-
-            // Verificar se está colapsado
             const isCollapsed = icon.textContent === '▶';
 
-            // ===== NOVO: FECHAR TODOS OS IRMÃOS NO MESMO NÍVEL =====
             if (isCollapsed) {
-                // Encontrar todos os steps no mesmo nível e fechá-los
+                // ===== OCULTAR IRMÃOS E TODOS OS SEUS DESCENDENTES =====
                 steps.forEach((step, idx) => {
                     const stepLevel = parseInt(step.getAttribute('data-level'));
-                    const stepIcon = step.querySelector('.collapse-icon');
 
-                    // Se for do mesmo nível E não for o clicado E estiver aberto
-                    if (stepLevel === clickedLevel && idx !== stepIndex && stepIcon && stepIcon.textContent === '▼') {
-                        // Fechar este irmão
-                        stepIcon.textContent = '▶';
+                    // É irmão (mesmo nível, não é o clicado)
+                    if (stepLevel === clickedLevel && idx !== stepIndex) {
+                        // 🔴 OCULTAR O PRÓPRIO IRMÃO
+                        step.style.display = 'none';
+                        const stepIcon = step.querySelector('.collapse-icon');
+                        if (stepIcon) stepIcon.textContent = '▶';
 
-                        // Ocultar todos os filhos deste irmão
+                        // 🔴 OCULTAR TODOS OS DESCENDENTES DO IRMÃO
                         for (let i = idx + 1; i < steps.length; i++) {
                             const childLevel = parseInt(steps[i].getAttribute('data-level'));
                             if (childLevel <= stepLevel) break;
                             steps[i].style.display = 'none';
-
-                            // Fechar ícones dos filhos também
                             const childIcon = steps[i].querySelector('.collapse-icon');
                             if (childIcon) childIcon.textContent = '▶';
                         }
@@ -3287,89 +3288,80 @@
             // Atualizar ícone do item clicado
             icon.textContent = isCollapsed ? '▼' : '▶';
 
-            // Mostrar/ocultar filhos DIRETOS (apenas nível + 1)
+            // Mostrar/ocultar filhos diretos (nível + 1)
             for (let i = stepIndex + 1; i < steps.length; i++) {
                 const currentLevel = parseInt(steps[i].getAttribute('data-level'));
-
-                // Parar quando encontrar item do mesmo nível ou superior
                 if (currentLevel <= clickedLevel) break;
 
-                // Mostrar/ocultar APENAS filhos DIRETOS (nível + 1)
                 if (currentLevel === clickedLevel + 1) {
                     if (isCollapsed) {
                         steps[i].style.display = 'flex';
                     } else {
                         steps[i].style.display = 'none';
-
-                        // Ao fechar, também fechar todos os descendentes
                         const childIcon = steps[i].querySelector('.collapse-icon');
                         if (childIcon) childIcon.textContent = '▶';
 
-                        // Fechar netos recursivamente
                         for (let j = i + 1; j < steps.length; j++) {
                             const grandchildLevel = parseInt(steps[j].getAttribute('data-level'));
                             if (grandchildLevel <= currentLevel) break;
                             steps[j].style.display = 'none';
-
                             const grandchildIcon = steps[j].querySelector('.collapse-icon');
                             if (grandchildIcon) grandchildIcon.textContent = '▶';
                         }
                     }
-                } else if (currentLevel > clickedLevel + 1) {
-                    // Ocultar netos e bisnetos quando fechar
-                    if (!isCollapsed) {
-                        steps[i].style.display = 'none';
+                } else if (currentLevel > clickedLevel + 1 && !isCollapsed) {
+                    steps[i].style.display = 'none';
+                }
+            }
+            // No final da função toggleStepChildren, antes de fechar a função:
+            if (isCollapsed) {
+                // Verificar se os filhos diretos abertos são pontos finais
+                for (let i = stepIndex + 1; i < steps.length; i++) {
+                    const currentLevel = parseInt(steps[i].getAttribute('data-level'));
+                    if (currentLevel <= clickedLevel) break;
+                    if (currentLevel === clickedLevel + 1) {
+                        const hasChildren = steps[i].getAttribute('data-has-children') === 'true';
+                        if (!hasChildren) {
+                            steps[i].querySelector('.step-content')?.classList.add('step-final');
+                        }
                     }
                 }
             }
         }
-        // Adicione CSS para o ícone
-        const collapseStyle = document.createElement('style');
-        collapseStyle.textContent = `
-    .collapse-icon {
-    padding-bottom: 31px;
-    padding-right: 18px;
-    padding-left: 40px;
-    display: inline-block;
-    transition: transform 0.2s;
-    font-size: 20px;
-    color: #667eea;
-    font-weight: bold;
-}
-    
-    .collapse-icon:hover {
-        color: #5568d3;
-        transform: scale(1.2);
-    }
-    
-    /* Indicador visual de nível profundo */
-    .task-step[data-level] {
-        position: relative;
-    }
-    
-    .task-step[data-level]::after {
-    content: attr(data-level);
-    position: absolute;
-    right: 9px;
-    top: 5px;
-    background: #667eea;
-    color: white;
-    font-size: 10px;
-    padding: 0px 11px;
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-    
-    .task-step[data-level]:hover::after {
-        opacity: 0.7;
-    }
-    
-    /* Ocultar indicador de nível 0 */
-    .task-step[data-level="0"]::after {
-        display: none;
-    }
-`;
+
+        function expandToStep(taskId, stepIndex) {
+            const taskElement = document.querySelector(`[data-taskid="${taskId}"]`).closest('.task-item');
+            if (!taskElement) return;
+
+            const steps = taskElement.querySelectorAll('.task-step');
+            const targetStep = steps[stepIndex];
+            const targetLevel = parseInt(targetStep.getAttribute('data-level'));
+
+            // Expandir todos os pais até chegar no step desejado
+            let currentLevel = targetLevel;
+            while (currentLevel > 0) {
+                for (let i = stepIndex - 1; i >= 0; i--) {
+                    const stepLevel = parseInt(steps[i].getAttribute('data-level'));
+                    if (stepLevel === currentLevel - 1) {
+                        const icon = steps[i].querySelector('.collapse-icon');
+                        if (icon && icon.textContent === '▶') {
+                            toggleStepChildren(taskId, i, null);
+                        }
+                        break;
+                    }
+                }
+                currentLevel--;
+            }
+
+            // ===== OCULTAR TUDO APÓS O STEP ENCONTRADO =====
+            for (let i = stepIndex + 1; i < steps.length; i++) {
+                steps[i].style.display = 'none';
+                const icon = steps[i].querySelector('.collapse-icon');
+                if (icon) icon.textContent = '▶';
+            }
+
+            targetStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
 
         // Adicione esta nova função (útil quando você buscar algo):
         function expandToStep(taskId, stepIndex) {
@@ -3404,7 +3396,7 @@
             // Scroll até o step
             targetStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        document.head.appendChild(collapseStyle);
+
         function renderTasks(tasks, searchValue = '') {
             const taskList = document.getElementById('taskList');
             taskList.innerHTML = '';
@@ -3483,15 +3475,15 @@
             </div>
             <div class="boxBonito">
                 <div class="task-actions">
-                    <button class="delete-task-btn danger" data-taskid="${task.id}">🗑️ Deletar</button>
-                    <button onclick="resetTaskSteps('${task.id}')" class="reset-btn">🔄 Resetar</button>
-                    <button class="edit-task-btn" data-taskid="${task.id}">✏️ Editar</button>
-                    <button class="read-task-btn" data-taskid="${task.id}">
-                        <span class="read-btn-text">🔊 Ler</span>
-                    </button>
                     <button class="step-read-btn" data-taskid="${task.id}">
                         <span class="read-btn-text">▶️ Executar</span>
                     </button>
+                    <button class="read-task-btn" data-taskid="${task.id}">
+                        <span class="read-btn-text">🔊 Ler</span>
+                    </button>
+                    <button onclick="resetTaskSteps('${task.id}')" class="reset-btn">🔄 Resetar</button>
+                    <button class="edit-task-btn" data-taskid="${task.id}">✏️ Editar</button>
+                    <button class="delete-task-btn danger" data-taskid="${task.id}">🗑️ Deletar</button>
                 </div>
             </div>
         `;
