@@ -568,13 +568,13 @@
         }
 
         /* Progress bar */
-        .task-progress {
-            height: 3px;
-            background: var(--separator);
-            margin: 0 16px 14px;
-            border-radius: 2px;
-            overflow: hidden;
-        }
+.task-progress {
+    height: 3px;
+    background: var(--separator);
+    margin: 0 16px 1px;
+    border-radius: 2px;
+    overflow: hidden;
+}
 
         .progress-bar {
             height: 100%;
@@ -903,6 +903,7 @@
         }
 
         .step-content {
+            max-width: 60vw;
             font-size: 14px;
             font-weight: 500;
             color: var(--text-primary);
@@ -1417,6 +1418,8 @@
             white-space: pre;
             overflow-x: auto;
         }
+
+
 
         /* ── Mobile ── */
         @media (max-width: 768px) {
@@ -3283,6 +3286,15 @@
                         }
                     }
                 });
+                setTimeout(() => {
+                    const firstVisibleChild = Array.from(steps).find((s, i) => {
+                        return i > stepIndex &&
+                            parseInt(s.getAttribute('data-level')) === clickedLevel + 1 &&
+                            s.style.display !== 'none';
+                    });
+                    const target = firstVisibleChild || clickedStep;
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'end' });
+                }, 50); // pequeno delay para o DOM atualizar antes de rolar
             }
 
             // Atualizar ícone do item clicado
@@ -3360,40 +3372,6 @@
                 if (icon) icon.textContent = '▶';
             }
 
-            targetStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        // Adicione esta nova função (útil quando você buscar algo):
-        function expandToStep(taskId, stepIndex) {
-            const taskElement = document.querySelector(`[data-taskid="${taskId}"]`).closest('.task-item');
-            if (!taskElement) return;
-
-            const steps = taskElement.querySelectorAll('.task-step');
-            const targetStep = steps[stepIndex];
-            const targetLevel = parseInt(targetStep.getAttribute('data-level'));
-
-            // Expandir todos os pais até chegar no step desejado
-            let currentLevel = targetLevel;
-
-            while (currentLevel > 0) {
-                // Encontrar o pai no nível anterior
-                for (let i = stepIndex - 1; i >= 0; i--) {
-                    const stepLevel = parseInt(steps[i].getAttribute('data-level'));
-
-                    if (stepLevel === currentLevel - 1) {
-                        const icon = steps[i].querySelector('.collapse-icon');
-                        if (icon && icon.textContent === '▶') {
-                            // Expandir este nível
-                            toggleStepChildren(taskId, i, null);
-                        }
-                        break;
-                    }
-                }
-
-                currentLevel--;
-            }
-
-            // Scroll até o step
             targetStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
