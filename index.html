@@ -1072,21 +1072,21 @@
             margin-bottom: 16px;
         }
 
-button.modal-close {
-    background: rgb(250 230 230);
-    border: none;
-    color: var(--text-secondary);
-    font-size: 16px;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    cursor: pointer;
-    box-shadow: none;
-}
+        button.modal-close {
+            background: rgb(250 230 230);
+            border: none;
+            color: var(--text-secondary);
+            font-size: 16px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            cursor: pointer;
+            box-shadow: none;
+        }
 
         button.modal-close:hover {
             background: var(--red);
@@ -1666,6 +1666,7 @@ button.modal-close {
 
                 <textarea id="editTaskSteps"></textarea>
                 <div class="indent-toolbar" id="editIndentToolbar" style="
+                            margin-top: 10px;
                             display: flex;
                             gap: 6px;
                             flex-wrap: wrap;
@@ -3451,11 +3452,11 @@ button.modal-close {
                     <button class="step-read-btn" data-taskid="${task.id}">
                         <span class="read-btn-text">▶️ Executar</span>
                     </button>
+                    <button class="edit-task-btn" data-taskid="${task.id}">✏️ Editar</button>
+                    <button onclick="resetTaskSteps('${task.id}')" class="reset-btn">🔄 Resetar</button>
                     <button class="read-task-btn" data-taskid="${task.id}">
                         <span class="read-btn-text">🔊 Ler</span>
                     </button>
-                    <button onclick="resetTaskSteps('${task.id}')" class="reset-btn">🔄 Resetar</button>
-                    <button class="edit-task-btn" data-taskid="${task.id}">✏️ Editar</button>
                     <button class="delete-task-btn danger" data-taskid="${task.id}">🗑️ Deletar</button>
                 </div>
             </div>
